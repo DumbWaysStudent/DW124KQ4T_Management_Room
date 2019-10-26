@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button, Fab, Icon } from "native-base";
-import { FlatList, RefreshControl, Dimensions, TouchableOpacity, Image, Picker } from "react-native";
+import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button, Fab, Icon, Picker } from "native-base";
+import { FlatList, RefreshControl, Dimensions, TouchableOpacity, Image } from "react-native";
 import { connect } from 'react-redux';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Checkin  from '../services/Checkin';
+import Checkout  from '../services/Checkout';
 import Customer  from '../services/Customer';
 
 const {width, height} = Dimensions.get('window');
@@ -36,8 +37,8 @@ class CheckinScreen extends Component {
     }
 
     checkin = (checkin, id) => {
+        let room = this.props.getCheckin.data.filter((item)=>item.id===id);
         if(checkin){
-            let room = this.props.getCheckin.data.filter((item)=>item.id===id);
             if(room.length>0){
                 room = room[0]
                 this.setState({
@@ -46,6 +47,17 @@ class CheckinScreen extends Component {
             }
             
             this.RBSheet.open();
+        }
+        else{
+            if(room.length>0){
+                room = room[0]
+                this.setState({
+                    customerId: room.checkins[0].customer.id.toString(),
+                    duration: room.checkins[0].duration.toString(),
+                    room
+                });
+            }
+            this[RBSheet+1].open();
         }
     }
 
@@ -56,7 +68,6 @@ class CheckinScreen extends Component {
             customers: this.props.getCustomer.data,
             count: count
         });
-        console.log("-------------",this.state.customers)
     }
     }
 
@@ -76,7 +87,6 @@ class CheckinScreen extends Component {
         let duration = parseInt(this.state.duration);
         let today = (new Date()).getTime();
         let endtime = today+(duration*60*1000);
-        console.log(this.state.customerId, "--------nih");
         this.props.storeCheckin(this.props.auth.data.token, {
             roomId: this.state.room.id,
             customerId: this.state.customerId,
@@ -93,6 +103,33 @@ class CheckinScreen extends Component {
         console.log(this.props.createCheckin.error);
     }
 
+    onCheckout = () => {
+        this.props.storeCheckout(this.props.auth.data.token, {roomId:this.state.room.id}, this.state.room.checkins[0].id);
+    }
+
+    successCreateCheckout = () => {
+        console.log("-----=======",this.props.createCheckout.data)
+        this.props.editCheckout(this.props.createCheckout.data);
+        this[RBSheet+1].close();
+
+    }
+
+    failCreateCheckout = () => {
+        console.log("-----=======",this.props.createCheckout.error)
+    }
+
+    onValueChange = (id) =>{
+        this.setState({
+            customerId: id
+        });
+    }
+    onCancelCheckIn = () => {
+        this.RBSheet.close();
+    }
+    onCancelCheckOut = () => {
+        this[RBSheet+1].close();
+    }
+
     render(){
         return (
             <>
@@ -100,8 +137,13 @@ class CheckinScreen extends Component {
                 {(!this.props.getCheckin.isLoading && this.props.getCheckin.error!=null)?<>{this.failedGetRoom()}</>:<></>}
 
                 {(!this.props.getCustomer.isLoading && this.props.getCustomer.data!=null)?<>{this.successGetCustomer()}</>:<></>}
+
+                {console.log("=================----------",this.props.getCustomer.data)}
+
                 {(!this.props.createCheckin.isLoading && this.props.createCheckin.data!=null)?<>{this.successCreateCheckin()}</>:<></>}
                 {(!this.props.createCheckin.isLoading && this.props.createCheckin.error!=null)?<>{this.failCreateCheckin()}</>:<></>}
+                {(!this.props.createCheckout.isLoading && this.props.createCheckout.data!=null)?<>{this.successCreateCheckout()}</>:<></>}
+                {(!this.props.createCheckout.isLoading && this.props.createCheckout.error!=null)?<>{this.failCreateCheckout()}</>:<></>}
 
                 <Container>
                     <Header style={{backgroundColor: "#2980b9"}}>
@@ -145,19 +187,63 @@ class CheckinScreen extends Component {
                                 <Item disabled>
                                     <Input style={{backgroundColor:"#ccc"}} disabled value={(this.state.room)?this.state.room.name:""} placeholder="Name" />
                                 </Item>
-                                <Item>
-                                    <Input value={this.state.customerId} onChangeText={this.onCustomerId} placeholder="customer id"/>
-                                </Item>
+                                
+                                <Picker
+                                    note
+                                    mode="dropdown"
+                                    style={{ width: 120 }}
+                                    selectedValue={this.state.customerId}
+                                    onValueChange={this.onValueChange.bind(this)}
+                                    >
+                                        <Picker.Item label="Customer" />
+                                        {this.props.getCustomer.data.map((item)=>{
+                                            return (
+                                                <Picker.Item label={item.name} value={item.id} />
+                                            );
+                                        })}
+                                </Picker>
                                 <Item>
                                     <Input value={this.state.duration} onChangeText={this.onDuration} placeholder="Duration"/>
                                 </Item>
 
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                    <Button onPress={this.onCancel} danger style={{flex:1, justifyContent: "center"}}>
+                                    <Button onPress={this.onCancelCheckIn} danger style={{flex:1, justifyContent: "center"}}>
                                         <Text>Cancel</Text>
                                     </Button>
                                     <Button onPress={this.onCheckin} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
                                         <Text>Save</Text>
+                                    </Button>
+                                </View>
+                            </View>
+                    </RBSheet>
+                    <RBSheet
+                    ref={ref => {
+                        this[RBSheet+1] = ref;
+                    }}
+                    height={300}
+                    duration={250}
+                    customStyles={{
+                        container: {}
+                    }}
+                    >
+                            <View style={{padding: 10}}>
+                                <View><Text style={{fontSize: 30}}>Checkout</Text></View>
+                                <Item disabled>
+                                    <Input style={{backgroundColor:"#ccc", marginBottom: 5}} disabled value={(this.state.room)?this.state.room.name:""} placeholder="Name" />
+                                </Item>
+                                <Item>{(this.state.room && this.state.room.checkins[0])?
+                                    <Input value={this.state.room.checkins[0].customer.name+"("+this.state.room.checkins[0].customer.identityNumber+")"} style={{backgroundColor:"#ccc", marginBottom: 5}} placeholder="customer id"/>:<></>}
+                                </Item>
+                                <Item>
+                                    <Input value={this.state.duration} style={{backgroundColor:"#ccc", marginBottom: 5}}  placeholder="Duration"/>
+                                </Item>
+
+                                <View style={{flex:1, flexDirection:"row",marginTop:20}}>
+                                    <Button onPress={this.onCancelCheckOut} danger style={{flex:1, justifyContent: "center"}}>
+                                        <Text>Cancel</Text>
+                                    </Button>
+                                    <Button onPress={this.onCheckout} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
+                                        <Text>Checkout</Text>
                                     </Button>
                                 </View>
                             </View>
@@ -172,14 +258,17 @@ const mapStateToProps = (state) => {
         auth: state.auth,
         getCheckin: state.getCheckin,
         getCustomer: state.getCustomer,
-        createCheckin: state.createCheckin
+        createCheckin: state.createCheckin,
+        createCheckout: state.createCheckout
     }
 }
 const mapDispatchToProps = {
     getAll: Checkin.index,
     getAllCustomer: Customer.index,
     storeCheckin: Checkin.store,
-    editCheckin: Checkin.editCheckin
+    editCheckin: Checkin.editCheckin,
+    storeCheckout: Checkout.store,
+    editCheckout: Checkout.editCheckout
   };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckinScreen);

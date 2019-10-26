@@ -9,6 +9,7 @@ import createCustomer from '../_reducers/createCustomer';
 import updateCustomer from '../_reducers/updateCustomer';
 import getCheckin from '../_reducers/getCheckin';
 import createCheckin from '../_reducers/createCheckin';
+import createCheckout from '../_reducers/createCheckout';
 import thunk from 'redux-thunk';
 
 // this global states
@@ -21,7 +22,8 @@ const reducers = combineReducers({
   createCustomer,
   updateCustomer,
   getCheckin,
-  createCheckin
+  createCheckin,
+  createCheckout
 });
 
 export default createStore(reducers, applyMiddleware(thunk));

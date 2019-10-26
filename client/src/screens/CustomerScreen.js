@@ -108,8 +108,6 @@ class CustomerScreen extends Component {
                 {(!this.props.createCustomer.isLoading && this.props.createCustomer.data!=null)?<>{this.successCreateCustomer()}</>:<></>}
                 {(!this.props.createCustomer.isLoading && this.props.createCustomer.error!=null)?<>{this.failedCreateCustomer()}</>:<></>}
 
-                {console.log(this.props.updateCustomer.data)}
-
                 {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.data!=null)?<>{this.successUpdateCustomer()}</>:<></>}
                 {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.error!=null)?<>{this.failedUpdateCustomer()}</>:<></>}
                 <Container>
