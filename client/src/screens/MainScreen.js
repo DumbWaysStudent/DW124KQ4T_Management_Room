@@ -12,7 +12,8 @@ class MainScreen extends Component {
         super(props);
 
         this.state = {
-            inputName: ""
+            inputName: "",
+            editInputName:""
         }
     }
     componentDidMount(){
@@ -29,6 +30,15 @@ class MainScreen extends Component {
         if(id===0){
             this.onAddRoom();
         }
+        else{
+            let data = this.props.getRoom.data.filter((item)=>item.id===id);
+            if(data.length > 0 ){
+                this.setState({
+                    editInputName:data[0].name
+                });
+                this[RBSheet + id].open();
+            }
+        }
     }
 
     onAddRoom = ()=>{
@@ -41,6 +51,12 @@ class MainScreen extends Component {
         });
     }
 
+    onChangeEditName = (text) => {
+        this.setState({
+            editInputName: text
+        });
+    }
+
     onCancel = () => {
         this.RBSheet.close();
     }
@@ -50,7 +66,6 @@ class MainScreen extends Component {
     }
 
     successCreateRoom = () => {
-        console.log("bro");
         this.props.addRoom(this.props.createRoom.data);
         this.RBSheet.close();
         
@@ -60,6 +75,24 @@ class MainScreen extends Component {
         console.log(this.props.createRoom.error);
     }
 
+    onEditCancel = (id) => {
+        this[RBSheet + id].close();
+    }
+
+    onEditRoom = (id) => {
+        this.props.onUpdateRoom(this.props.auth.data.token, {name:this.state.editInputName}, id);
+        this[RBSheet + id].close();
+    }
+
+    successUpdateRoom = () =>{
+        this.props.editRoom(this.props.updateRoom.data);
+        this.RBSheet.close();
+    }
+
+    failedUpdateRoom = () => {
+        console.log(this.props.updateRoom.error);
+    }
+
 
     render(){
         return (
@@ -67,9 +100,11 @@ class MainScreen extends Component {
                 {(!this.props.getRoom.isLoading && this.props.getRoom.data!=null)?<>{this.successGetRoom()}</>:<></>}
                 {(!this.props.getRoom.isLoading && this.props.getRoom.error!=null)?<>{this.failedGetRoom()}</>:<></>}
 
-                {console.log(this.props.createRoom)}
                 {(!this.props.createRoom.isLoading && this.props.createRoom.data!=null)?<>{this.successCreateRoom()}</>:<></>}
                 {(!this.props.createRoom.isLoading && this.props.createRoom.error!=null)?<>{this.failedCreateRoom()}</>:<></>}
+
+                {(!this.props.updateRoom.isLoading && this.props.updateRoom.data!=null)?<>{this.successUpdateRoom()}</>:<></>}
+                {(!this.props.updateRoom.isLoading && this.props.updateRoom.error!=null)?<>{this.failedUpdateRoom()}</>:<></>}
 
                 <Container>
                     <Header style={{backgroundColor: "#2980b9"}}>
@@ -92,10 +127,36 @@ class MainScreen extends Component {
                                 keyExtractor = {item => item.id.toString()}
                                 numColumns= {3}
                                 renderItem = {({item})=>(
+                                    <>
                                     <TouchableOpacity onPress={this.onDetailRoom.bind(this, item.id)}>
                                         <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),
                                         margin: 1, height: width/3 }}><Text>{item.name}</Text></View>
                                     </TouchableOpacity>
+                                    <RBSheet
+                                    ref={ref => {
+                                        this[RBSheet + item.id] = ref;
+                                    }}
+                                    duration={250}
+                                    customStyles={{
+                                        container: {}
+                                    }}
+                                    >
+                                        <View style={{padding: 10}}>
+                                        <View><Text style={{fontSize: 30}}>Edit: {item.name}</Text></View>
+                                        <Item>
+                                            <Input value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
+                                        </Item>
+                                        </View>
+                                        <View style={{flex:1, flexDirection:"row",marginTop:20}}>
+                                            <Button onPress={this.onEditCancel.bind(this, item.id)} danger style={{flex:1, justifyContent: "center"}}>
+                                                <Text>Cancel</Text>
+                                            </Button>
+                                            <Button onPress={this.onEditRoom.bind(this, item.id)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
+                                                <Text>Update</Text>
+                                            </Button>
+                                        </View>
+                                    </RBSheet>
+                                    </>
                                 )}
                             />
                             </Body>
@@ -125,6 +186,7 @@ class MainScreen extends Component {
                                 </View>
                             </View>
                     </RBSheet>
+                    
                 </Container>
             </>
         );
@@ -136,13 +198,16 @@ const mapStateToProps = (state) => {
     return {
         auth: state.auth,
         getRoom: state.getRoom,
-        createRoom: state.createRoom
+        createRoom: state.createRoom,
+        updateRoom: state.updateRoom
     }
 }
 const mapDispatchToProps = {
     getAll: Room.index,
     onCreateRoom: Room.store,
     addRoom: Room.addRoom,
+    onUpdateRoom: Room.update,
+    editRoom: Room.editRoom
   };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

@@ -7,3 +7,5 @@ export const GET_ROOM_REJECTED = "GET_ROOM_REJECTED";
 export const RESET_GET_ROOM = "RESET_GET_ROOM";
 
 export const ADD_ROOM = "ADD_ROOM";
+
+export const EDIT_ROOM = "EDIT_ROOM";

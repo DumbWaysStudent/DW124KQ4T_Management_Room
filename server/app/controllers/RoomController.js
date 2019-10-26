@@ -60,6 +60,49 @@ RoomController.prototype = {
                 });
             }
         }
+    },
+    update: async (req, res) =>{
+        var rules = {
+            name: {
+                label: "Name",
+                rule :{
+                    required : true,
+                    unique   : "room,name,"+req.params.id+",id"
+                }
+            }
+        }
+
+        let validate = await validator.make(req.body, rules);
+        if(validate.fails()){
+            return res.status(400).json({
+                msg: "Something went wrong!",
+                errors: validate.getMessages()
+            });
+        }
+        else{
+            try{
+                await Room.update({
+                    name: req.body.name,
+                },{
+                    where: {
+                        id: req.params.id
+                    }
+                });
+
+                let roomData = await Room.findOne({
+                    where: {
+                        id: req.params.id,
+                    }
+                });
+                return res.status(200).json({
+                    msg: "Success",
+                    data: roomData
+                });
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
     }
 }
 

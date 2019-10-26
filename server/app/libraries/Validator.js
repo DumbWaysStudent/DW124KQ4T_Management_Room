@@ -1,4 +1,6 @@
 const models = require(`../../models`);
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const uniqueness = async function(model, column, value, ignoreId=null, ignoreIdColumn=null){
     var modelnya = models[model];
@@ -6,6 +8,11 @@ const uniqueness = async function(model, column, value, ignoreId=null, ignoreIdC
         where: {}
     }
     query.where[column] = value;
+    if(ignoreId!=null){
+        query.where[ignoreIdColumn]={
+            [Op.ne]: ignoreId
+        }
+    }
 
     return modelnya.findAll(query);
     // var algo = ""

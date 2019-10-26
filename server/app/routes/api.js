@@ -15,5 +15,6 @@ module.exports = (router) => {
         router.group("/room", (room) =>{
                 room.post("/", [mid.checkAuth, mid.auth, bodyParser.json()], RoomController.store);
 
+                room.put("/:id", [mid.checkAuth, mid.auth, bodyParser.json()], RoomController.update);
         });
 }
