@@ -46,7 +46,7 @@ class MainScreen extends Component {
     }
 
     onCreateRoom = () => {
-        this.props.createRoom(this.props.auth.data.token, {name: this.state.inputName});
+        this.props.onCreateRoom(this.props.auth.data.token, {name: this.state.inputName});
     }
 
     successCreateRoom = () => {
@@ -67,7 +67,7 @@ class MainScreen extends Component {
                 {(!this.props.getRoom.isLoading && this.props.getRoom.data!=null)?<>{this.successGetRoom()}</>:<></>}
                 {(!this.props.getRoom.isLoading && this.props.getRoom.error!=null)?<>{this.failedGetRoom()}</>:<></>}
 
-
+                {console.log(this.props.createRoom)}
                 {(!this.props.createRoom.isLoading && this.props.createRoom.data!=null)?<>{this.successCreateRoom()}</>:<></>}
                 {(!this.props.createRoom.isLoading && this.props.createRoom.error!=null)?<>{this.failedCreateRoom()}</>:<></>}
 
@@ -141,7 +141,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = {
     getAll: Room.index,
-    createRoom: Room.store,
+    onCreateRoom: Room.store,
     addRoom: Room.addRoom,
   };
 

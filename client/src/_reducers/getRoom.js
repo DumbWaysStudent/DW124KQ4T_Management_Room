@@ -40,7 +40,7 @@ const getRoom = (state = initialState, action) => {
             error: null
           } 
       case ADD_ROOM:
-          let data =state.data.filter((item)=>{item.id!==0})
+          let data =state.data.filter((item)=>item.id!==0)
           data.push(action.payload);
           data.push({id:0, name:"+"});
           return {
