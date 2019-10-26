@@ -1,114 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from "react";
+import { Icon } from "native-base";
+import { Provider } from 'react-redux';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
+import store from './src/_redux/store';
+
+
+
+import LoginScreen from './src/screens/LoginScreen';
+import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
+import MainScreen from './src/screens/MainScreen';
+
+
+
+const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
+  Main: {
+    screen: MainScreen,
+    navigationOptions:({navigation})=>{
+      let obj = {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+        ),
+        headerTransparent: true,
+        headerLeft: null
+      };
+      return obj
+    }
+  }
+},{
+  labeled: false,
+  activeColor: '#ecf0f1',
+  inactiveColor: '#bdc3c7',
+  barStyle: { backgroundColor: '#2980b9' },
+}));
+
+
+
+
+const RootNavigation = createAppContainer(createSwitchNavigator(
+  {
+    AuthLoading: {
+      screen: AuthLoadingScreen
+    },
+    Login: {
+      screen: LoginScreen,
+      navigationOptions:{
+        headerTransparent: true
+      }
+    },
+    Main: MainNavigator
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+));
+const App = () => {
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+    <Provider store={store}>
+      <RootNavigation />
+    </Provider>
+  )
+}
 
 export default App;
+console.disableYellowBox = true;
