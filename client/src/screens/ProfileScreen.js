@@ -14,7 +14,7 @@ class ProfileScreen extends Component {
     logout = async () => {
         try{
             await Auth.destroy();
-            this.props.authReset();
+            this.props.resetAuth();
             this.props.navigation.navigate("Login");
           }
           catch(error){
@@ -43,7 +43,7 @@ const mapStateToProps = (state) => {
     }
 }
 const mapDispatchToProps = {
-    authreset: Auth.resetAuth,
+    resetAuth: Auth.resetAuth,
   };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
