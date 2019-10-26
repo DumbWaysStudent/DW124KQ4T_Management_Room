@@ -15,6 +15,7 @@ import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
 import MainScreen from './src/screens/MainScreen';
 import CustomerScreen from './src/screens/CustomerScreen';
 import CheckinScreen from './src/screens/CheckinScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 
 
@@ -47,6 +48,19 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
   },
   Customer: {
     screen: CustomerScreen,
+    navigationOptions:({navigation})=>{
+      let obj = {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+        ),
+        headerTransparent: true,
+        headerLeft: null
+      };
+      return obj
+    }
+  },
+  Profile: {
+    screen: ProfileScreen,
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (

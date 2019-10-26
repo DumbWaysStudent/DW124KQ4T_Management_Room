@@ -30,7 +30,6 @@ class Auth {
         await AsyncStorage.removeItem(`authUser.id`);
         await AsyncStorage.removeItem(`authUser.image`);
         await AsyncStorage.removeItem(`authUser.name`);
-        await AsyncStorage.removeItem(`authUser.email`);
         await AsyncStorage.removeItem(`authUser.token`);
     }
 

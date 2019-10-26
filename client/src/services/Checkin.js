@@ -2,6 +2,8 @@ import axios from "../utils/Api";
 
 import { getCheckinFullfilled, getCheckinPending, getCheckinRejected, resetGetCheckin, addCheckin, editCheckin } from "../_actions/getCheckin"
 
+import { createCheckinPending, createCheckinFullfilled, createCheckinRejected, resetCreateCheckin } from "../_actions/createCheckin"
+
 class Checkin {
     index = (token) => {
         return dispatch => {
@@ -25,6 +27,29 @@ class Checkin {
             });
         }
     }
+    store = (token, data)=>{
+        return dispatch => {
+            console.log("--------------loading")
+            dispatch(createCheckinPending());
+            axios({
+                method: 'POST',
+                headers: { 'content-type': 'application/json', "authorization": `Bearer ${token}` },
+                url: `/checkin`,
+                data: data
+            }).then(result=>{
+                console.log("--------------ntap")
+                dispatch(createCheckinFullfilled(result.data.data));
+            }).catch(err=>{
+                console.log("--------------error")
+                if(typeof err.response !== "undefined"){
+                    dispatch(createCheckinRejected(err.response));
+                }
+                else{
+                    dispatch(createCheckinRejected(err));
+                }
+            });
+        }
+    }
     addCheckin = (data) => {
         return dispatch=>{
             dispatch(addCheckin(data))
@@ -39,7 +64,8 @@ class Checkin {
     editCheckin = (data) => {
         return dispatch=>{
             dispatch(editCheckin(data))
-            dispatch(resetUpdateCheckin());
+            dispatch(resetCreateCheckin());
+            // dispatch(resetUpdateCheckin());
         }
     }
 }
