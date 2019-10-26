@@ -9,6 +9,13 @@ const {width, height} = Dimensions.get('window');
 
 class CheckinScreen extends Component {
 
+    constructor(props){
+        super(props);
+        this.state = {
+            room: null,
+        }
+    }
+
     componentDidMount(){
         this.props.getAll(this.props.auth.data.token)
     }
@@ -19,6 +26,20 @@ class CheckinScreen extends Component {
 
     failedGetRoom = () => {
         console.log(this.props.getCheckin.error)
+    }
+
+    checkin = (checkin, id) => {
+        if(checkin){
+            let room = this.props.getCheckin.data.filter((item)=>item.id===id);
+            if(room.length>0){
+                room = room[0]
+                this.setState({
+                    room
+                });
+            }
+            
+            this.RBSheet.open();
+        }
     }
 
     render(){
@@ -44,7 +65,7 @@ class CheckinScreen extends Component {
                                 numColumns= {3}
                                 renderItem = {({item})=>(
                                     <>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={this.checkin.bind(this, ((item.checkins.length>0)?((item.checkins[0].isBooked)?false:true):true), item.id)}>
                                         <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),margin: 1, height: width/3, backgroundColor: ((item.checkins.length>0)?((item.checkins[0].isBooked)?"#ccc":"green"):"green") }}><Text>{item.name}</Text></View>
                                     </TouchableOpacity>
                                     </>
@@ -53,6 +74,22 @@ class CheckinScreen extends Component {
                             </Body>
                         </CardItem>
                     </Content>
+                    <RBSheet
+                    ref={ref => {
+                        this.RBSheet = ref;
+                    }}
+                    duration={250}
+                    customStyles={{
+                        container: {}
+                    }}
+                    >
+                            <View style={{padding: 10}}>
+                                <View><Text style={{fontSize: 30}}>Checkin</Text></View>
+                                <Item disabled>
+                                    <Input style={{backgroundColor:"#ccc"}} disabled value={(this.state.room)?this.state.room.name:""} placeholder="Name" />
+                                </Item>
+                            </View>
+                    </RBSheet>
                 </Container>
             </>
         );

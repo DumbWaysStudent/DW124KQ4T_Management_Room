@@ -27,4 +27,6 @@ module.exports = (router) => {
                 customer.put("/:id", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.update);
         });
         router.get("/checkin", [mid.checkAuth, mid.auth], OrderController.index);
+        router.post("/checkin", [mid.checkAuth, mid.auth, bodyParser.json()], OrderController.store);
+        router.put("/order/:id", [mid.checkAuth, mid.auth, bodyParser.json()], OrderController.update);
 }
