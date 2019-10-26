@@ -23,5 +23,6 @@ module.exports = (router) => {
 
         router.group("/customer", (customer) =>{
                 customer.post("/", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.store);
+                customer.put("/:id", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.update);
         });
 }

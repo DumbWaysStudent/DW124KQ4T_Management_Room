@@ -14,7 +14,10 @@ class CustomerScreen extends Component {
         this.state={
             inputName:"",
             inputIdentity:"",
-            inputPhone:""
+            inputPhone:"",
+            editInputName:"",
+            editInputIdentity:"",
+            editInputPhone:""
         }
     }
     componentDidMount(){
@@ -54,11 +57,61 @@ class CustomerScreen extends Component {
     failedCreateCustomer = () => {
         console.log(this.props.createCustomer.error);
     }
+
+    onDetailCustomer = (id) => {
+        let data = this.props.getCustomer.data.filter((item)=>item.id===id);
+        if(data.length > 0 ){
+            this.setState({
+                editInputName:data[0].name,
+                editInputIdentity:data[0].identityNumber,
+                editInputPhone:data[0].phoneNumber,
+            });
+            this[RBSheet + id].open();
+        }
+    }
+    onEditCancel = (id) => {
+        this[RBSheet + id].close();
+    }
+    onChangeEditName = (text) => {
+        this.setState({
+            editInputName: text
+        });
+    }
+    onChangeEditIdentity = (text) => {
+        this.setState({
+            editInputIdentity: text
+        });
+    }
+    onChangeEditPhone = (text) => {
+        this.setState({
+            editInputPhone: text
+        });
+    }
+    onUpdateCustomer = (id) => {
+        this.props.onUpdateCustomer(this.props.auth.data.token, {
+            name:this.state.editInputName,
+            identity:this.state.editInputIdentity,
+            phone:this.state.editInputPhone,
+        }, id);
+    }
+    successUpdateCustomer = () =>{
+        this[ RBSheet + this.props.updateCustomer.data.id].close();
+        this.props.editCustomer(this.props.updateCustomer.data);
+    }
+
+    failedUpdateCustomer = () => {
+        console.log(this.props.updateCustomer.error);
+    }
     render(){
         return (
             <>
                 {(!this.props.createCustomer.isLoading && this.props.createCustomer.data!=null)?<>{this.successCreateCustomer()}</>:<></>}
                 {(!this.props.createCustomer.isLoading && this.props.createCustomer.error!=null)?<>{this.failedCreateCustomer()}</>:<></>}
+
+                {console.log(this.props.updateCustomer.data)}
+
+                {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.data!=null)?<>{this.successUpdateCustomer()}</>:<></>}
+                {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.error!=null)?<>{this.failedUpdateCustomer()}</>:<></>}
                 <Container>
                     <Header style={{backgroundColor: "#2980b9"}}>
                         <Left></Left>
@@ -76,6 +129,7 @@ class CustomerScreen extends Component {
                                     keyExtractor = {item => item.id.toString()}
                                     renderItem = {({item})=>(
                                         <>
+                                            <TouchableOpacity onPress={this.onDetailCustomer.bind(this, item.id)}>
                                             <View style={{flex: 1, flexDirection:'row', marginBottom: 15}}>
                                                 <Image style={{width: 65, height: 65, borderRadius:(65/2)}} source={{uri: `${item.image}`}} />
                                                 <View style={{marginLeft: 20}}>
@@ -96,6 +150,38 @@ class CustomerScreen extends Component {
                                                     </View>
                                                 </View>
                                             </View>
+                                            </TouchableOpacity>
+                                            <RBSheet
+                                                ref={ref => {
+                                                    this[RBSheet + item.id] = ref;
+                                                }}
+                                                height={300}
+                                                duration={250}
+                                                customStyles={{
+                                                    container: {}
+                                                }}
+                                                >
+                                                        <View style={{padding: 10}}>
+                                                            <View><Text style={{fontSize: 30}}>Edit Customer: {item.identityNumber}</Text></View>
+                                                            <Item>
+                                                                <Input value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
+                                                            </Item>
+                                                            <Item>
+                                                                <Input value={this.state.editInputIdentity} placeholder="Identity Number" onChangeText={this.onChangeEditIdentity} />
+                                                            </Item>
+                                                            <Item>
+                                                                <Input value={this.state.editInputPhone} placeholder="Phone Number" onChangeText={this.onChangeEditPhone} />
+                                                            </Item>
+                                                            <View style={{flex:1, flexDirection:"row",marginTop:20}}>
+                                                                <Button onPress={this.onEditCancel.bind(this, item.id)} danger style={{flex:1, justifyContent: "center"}}>
+                                                                    <Text>Cancel</Text>
+                                                                </Button>
+                                                                <Button onPress={this.onUpdateCustomer.bind(this, item.id)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
+                                                                    <Text>Update</Text>
+                                                                </Button>
+                                                            </View>
+                                                        </View>
+                                                </RBSheet>
                                         </>
                                     )}
                                     />
@@ -153,12 +239,16 @@ const mapStateToProps = (state) => {
         auth: state.auth,
         getCustomer: state.getCustomer,
         createCustomer: state.createCustomer,
+        updateCustomer: state.updateCustomer
     }
 }
 const mapDispatchToProps = {
     getAll: Customer.index,
     onCreateCustomer: Customer.store,
     addCustomer: Customer.addCustomer,
+    editCustomer: Customer.editCustomer,
+    onUpdateCustomer: Customer.update,
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerScreen);

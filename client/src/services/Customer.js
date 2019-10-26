@@ -4,6 +4,8 @@ import { getCustomerFullfilled, getCustomerPending, getCustomerRejected, resetGe
 
 import { createCustomerPending, createCustomerFullfilled, createCustomerRejected, resetCreateCustomer } from "../_actions/createCustomer"
 
+import { updateCustomerPending, updateCustomerFullfilled, updateCustomerRejected, resetUpdateCustomer } from "../_actions/updateCustomer"
+
 class Customer {
     index = (token) => {
         return dispatch => {
@@ -46,6 +48,30 @@ class Customer {
                 }
                 else{
                     dispatch(createCustomerRejected(err));
+                }
+            });
+        }
+    }
+    update = (token,data,id) => {
+        return dispatch => {
+            console.log("--------------loading")
+            dispatch(updateCustomerPending());
+            console.log(data);
+            axios({
+                method: 'PUT',
+                headers: { 'content-type': 'application/json', "authorization": `Bearer ${token}` },
+                data: data,
+                url: `/customer/${id}`
+            }).then(result=>{
+                console.log("--------------ntap")
+                dispatch(updateCustomerFullfilled(result.data.data));
+            }).catch(err=>{
+                console.log("--------------error")
+                if(typeof err.response !== "undefined"){
+                    dispatch(updateCustomerRejected(err.response));
+                }
+                else{
+                    dispatch(updateCustomerRejected(err));
                 }
             });
         }

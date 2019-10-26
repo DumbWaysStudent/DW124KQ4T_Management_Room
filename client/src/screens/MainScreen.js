@@ -81,12 +81,12 @@ class MainScreen extends Component {
 
     onEditRoom = (id) => {
         this.props.onUpdateRoom(this.props.auth.data.token, {name:this.state.editInputName}, id);
-        this[RBSheet + id].close();
+        // this[RBSheet + id].close();
     }
 
     successUpdateRoom = () =>{
         this.props.editRoom(this.props.updateRoom.data);
-        this.RBSheet.close();
+        this[RBSheet + this.props.updateRoom.data.id].close();
     }
 
     failedUpdateRoom = () => {
