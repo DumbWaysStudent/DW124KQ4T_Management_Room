@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const AuthController = require('../controllers/AuthController');
 const RoomController = require('../controllers/RoomController');
+const CustomerController = require('../controllers/CustomerController');
 
 
 const mid = require('./middleware');
@@ -17,4 +18,6 @@ module.exports = (router) => {
 
                 room.put("/:id", [mid.checkAuth, mid.auth, bodyParser.json()], RoomController.update);
         });
+
+        router.get("/customers", [mid.checkAuth, mid.auth], CustomerController.index);
 }
