@@ -20,4 +20,8 @@ module.exports = (router) => {
         });
 
         router.get("/customers", [mid.checkAuth, mid.auth], CustomerController.index);
+
+        router.group("/customer", (customer) =>{
+                customer.post("/", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.store);
+        });
 }
