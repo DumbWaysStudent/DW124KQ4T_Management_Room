@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const AuthController = require('../controllers/AuthController');
 const RoomController = require('../controllers/RoomController');
 const CustomerController = require('../controllers/CustomerController');
+const OrderController = require('../controllers/OrderController');
 
 
 const mid = require('./middleware');
@@ -25,4 +26,5 @@ module.exports = (router) => {
                 customer.post("/", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.store);
                 customer.put("/:id", [mid.checkAuth, mid.auth, bodyParser.json()], CustomerController.update);
         });
+        router.get("/checkin", [mid.checkAuth, mid.auth], OrderController.index);
 }

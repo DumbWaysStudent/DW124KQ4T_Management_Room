@@ -14,10 +14,24 @@ import LoginScreen from './src/screens/LoginScreen';
 import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
 import MainScreen from './src/screens/MainScreen';
 import CustomerScreen from './src/screens/CustomerScreen';
+import CheckinScreen from './src/screens/CheckinScreen';
 
 
 
 const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
+  Checkin: {
+    screen: CheckinScreen,
+    navigationOptions:({navigation})=>{
+      let obj = {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+        ),
+        headerTransparent: true,
+        headerLeft: null
+      };
+      return obj
+    }
+  },
   Main: {
     screen: MainScreen,
     navigationOptions:({navigation})=>{
