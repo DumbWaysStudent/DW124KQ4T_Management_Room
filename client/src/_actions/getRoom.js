@@ -1,4 +1,4 @@
-import { GET_ROOM_PENDING, GET_ROOM_FULLFILLED, GET_ROOM_REJECTED, RESET_GET_ROOM } from "../_types/getRoom"
+import { GET_ROOM_PENDING, GET_ROOM_FULLFILLED, GET_ROOM_REJECTED, RESET_GET_ROOM, ADD_ROOM } from "../_types/getRoom"
 
 export const getRoomPending = () => {
     return {
@@ -21,5 +21,12 @@ export const getRoomPending = () => {
   export const resetGetRoom = () => {
     return {
       type: RESET_GET_ROOM
+    }
+  }
+
+  export const addRoom = (data) => {
+    return {
+      type: ADD_ROOM,
+      payload: data
     }
   }

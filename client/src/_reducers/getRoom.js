@@ -1,4 +1,4 @@
-import { GET_ROOM_PENDING, GET_ROOM_FULLFILLED, GET_ROOM_REJECTED, RESET_GET_ROOM } from "../_types/getRoom"
+import { GET_ROOM_PENDING, GET_ROOM_FULLFILLED, GET_ROOM_REJECTED, RESET_GET_ROOM, ADD_ROOM } from "../_types/getRoom"
 
 const initialState = {
     isLoading: false,
@@ -39,6 +39,16 @@ const getRoom = (state = initialState, action) => {
             data: [],
             error: null
           } 
+      case ADD_ROOM:
+          let data =state.data.filter((item)=>{item.id!==0})
+          data.push(action.payload);
+          data.push({id:0, name:"+"});
+          return {
+            ...state,
+            isLoading: false,
+            data: data,
+            error: null
+          }
       default:
         return state;
     }

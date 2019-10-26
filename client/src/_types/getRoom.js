@@ -5,3 +5,5 @@ export const GET_ROOM_FULLFILLED = "GET_ROOM_FULLFILLED";
 export const GET_ROOM_REJECTED = "GET_ROOM_REJECTED";
 
 export const RESET_GET_ROOM = "RESET_GET_ROOM";
+
+export const ADD_ROOM = "ADD_ROOM";

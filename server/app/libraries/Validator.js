@@ -46,7 +46,7 @@ module.exports={
                 }
                 else if(keyRule=="unique"){
 
-                    if(rule.rule[keyRule]){
+                    if(rule.rule[keyRule] && typeof body[key] !== "undefined"){
                         var uniqueRule=rule.rule[keyRule].split(",");
                         var table = uniqueRule[0];
                         var column = uniqueRule[1];
