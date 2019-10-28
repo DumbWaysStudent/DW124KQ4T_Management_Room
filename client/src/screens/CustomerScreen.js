@@ -17,7 +17,8 @@ class CustomerScreen extends Component {
             inputPhone:"",
             editInputName:"",
             editInputIdentity:"",
-            editInputPhone:""
+            editInputPhone:"",
+            refreshing: false
         }
     }
     componentDidMount(){
@@ -25,6 +26,17 @@ class CustomerScreen extends Component {
         if(this.props.auth.data){
         this.props.getAll(this.props.auth.data.token);
         }
+    }
+    onLoad = () => {
+        this.setState({
+            refreshing: true
+        });
+        if(this.props.auth.data){
+            this.props.getAll(this.props.auth.data.token);
+        }
+        this.setState({
+            refreshing: false
+        });
     }
     onChangeName = (text) => {
         this.setState({
@@ -145,7 +157,9 @@ class CustomerScreen extends Component {
                         </Body>
                         <Right></Right>
                     </Header>
-                    <Content>
+                    <Content refreshControl={
+                        <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onLoad} />
+                    }>
                         <CardItem>
                             <Body>
                                 <FlatList

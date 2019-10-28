@@ -223,7 +223,7 @@ class CheckinScreen extends Component {
                                     selectedValue={this.state.customerId}
                                     onValueChange={this.onValueChange.bind(this)}
                                     >
-                                        <Picker.Item label="Customer" />
+                                        <Picker.Item value="" label="Customer" />
                                         {this.props.getCustomer.data.map((item)=>{
                                             return (
                                                 <Picker.Item label={item.name} value={item.id} />
