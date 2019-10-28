@@ -90,16 +90,8 @@ OrderController.prototype = {
         }
         else{
             try{
-                let result = await Order.create({
-                    roomId: req.body.roomId,
-                    customerId: req.body.customerId,
-                    duration: req.body.duration,
-                    orderEndTime: req.body.orderEndTime,
-                    isBooked: true,
-                    isDone: false
-                })
-                let orderData = await Room.findOne({where:{
-                    id: result.roomId,
+                let oldOrderData = await Room.findOne({where:{
+                    id: req.body.roomId,
                 },include:[{
                     as: 'checkins',
                     model: Order,
@@ -112,18 +104,63 @@ OrderController.prototype = {
                         ['createdAt', 'DESC']
                     ]
                 }]})
-                orderData = JSON.parse(JSON.stringify(orderData));
-                    if(orderData.checkins.length>0){
-                        orderData.order = orderData.checkins[0];
-                        orderData.customer = orderData.checkins[0].customer;
-                        delete orderData.checkins[0].customer;
-    
-                    }
-                    delete orderData.checkins;
-                return res.status(200).json({
-                    msg: "Success!",
-                    data: orderData
-                });
+
+                let isBooked = true;
+                
+                if(oldOrderData.checkins.length>0){
+                    oldOrderData.checkins.forEach((item)=>{
+                        if(!item.isBooked){
+                            isBooked = false
+                        }
+                    });
+                }
+                else{
+                    isBooked = false
+                }
+
+
+                if(isBooked){
+                    return res.status(400).json({
+                        msg: "Already Booked!"
+                    });
+                }
+                else{
+
+                    let result = await Order.create({
+                        roomId: req.body.roomId,
+                        customerId: req.body.customerId,
+                        duration: req.body.duration,
+                        orderEndTime: req.body.orderEndTime,
+                        isBooked: true,
+                        isDone: false
+                    })
+                    let orderData = await Room.findOne({where:{
+                        id: result.roomId,
+                    },include:[{
+                        as: 'checkins',
+                        model: Order,
+                        include: [{
+                            as:'customer',
+                            model: Customer
+                        }],
+                        limit: 1,
+                        order: [
+                            ['createdAt', 'DESC']
+                        ]
+                    }]})
+                    orderData = JSON.parse(JSON.stringify(orderData));
+                        if(orderData.checkins.length>0){
+                            orderData.order = orderData.checkins[0];
+                            orderData.customer = orderData.checkins[0].customer;
+                            delete orderData.checkins[0].customer;
+        
+                        }
+                        delete orderData.checkins;
+                    return res.status(200).json({
+                        msg: "Success!",
+                        data: orderData
+                    });
+                }
             }
             catch(error){
                 console.log(error);
@@ -138,8 +175,8 @@ OrderController.prototype = {
         try{
             await Order.update({
                 name: req.body.name,
-                isBooked: false,
-                isDone: true
+                isBooked: req.body.isBooked,
+                isDone: req.body.isDone
             },{
                 where: {
                     id: req.params.id

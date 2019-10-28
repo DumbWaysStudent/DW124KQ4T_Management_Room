@@ -56,7 +56,11 @@ class CheckinScreen extends Component {
                         if((new Date(item.order.orderEndTime).getTime())<= today){
                             if(!this.props.createCheckout.isLoading){
                                 if(this.props.auth.data){
-                                    this.props.storeCheckout(this.props.auth.data.token, {roomId: item.id}, item.order.id);
+                                    this.props.storeCheckout(this.props.auth.data.token, {
+                                        roomId: item.id,
+                                        isBooked: false,
+                                        isDone: true
+                                    }, item.order.id);
                                 }
                             }
                         }
@@ -150,7 +154,11 @@ class CheckinScreen extends Component {
 
     onCheckout = () => {
         if(this.props.auth.data){
-        this.props.storeCheckout(this.props.auth.data.token, {roomId:this.state.room.id}, this.state.room.order.id);
+        this.props.storeCheckout(this.props.auth.data.token, {
+            roomId:this.state.room.id,
+            isDone: true,
+            isBooked: false
+        }, this.state.room.order.id);
         }
     }
 
@@ -238,14 +246,14 @@ class CheckinScreen extends Component {
                                 <Picker
                                     note
                                     mode="dropdown"
-                                    style={{ width: 120 }}
+                                    style={{ width: (width*(95/100)) }}
                                     selectedValue={this.state.customerId}
                                     onValueChange={this.onValueChange.bind(this)}
                                     >
                                         <Picker.Item value="" label="Customer" />
                                         {this.props.getCustomer.data.map((item)=>{
                                             return (
-                                                <Picker.Item label={item.name} value={item.id} />
+                                                <Picker.Item label={`${item.name} (${item.identityNumber})`} value={item.id} />
                                             );
                                         })}
                                 </Picker>
@@ -285,7 +293,7 @@ class CheckinScreen extends Component {
                                     <Input style={{backgroundColor:"#ccc", marginBottom: 5}} disabled value={(this.state.room)?this.state.room.name:""} placeholder="Name" />
                                 </Item>
                                 <Item>{(this.state.room && this.state.room.customer)?
-                                    <Input value={this.state.room.customer.name+"("+this.state.room.customer.identityNumber+")"} style={{backgroundColor:"#ccc", marginBottom: 5}} placeholder="customer id"/>:<></>}
+                                    <Input value={this.state.room.customer.name+" ("+this.state.room.customer.identityNumber+")"} style={{backgroundColor:"#ccc", marginBottom: 5}} placeholder="customer id"/>:<></>}
                                 </Item>
                                 <Item>
                                     <Input value={this.state.duration} style={{backgroundColor:"#ccc", marginBottom: 5}}  placeholder="Duration"/>

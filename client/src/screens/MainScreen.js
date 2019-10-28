@@ -212,7 +212,6 @@ class MainScreen extends Component {
                             <Item>
                                 <Input autoFocus={true} value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
                             </Item>
-                            </View>
                             <View style={{flex:1, flexDirection:"row",marginTop:20}}>
                                 <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
                                     <Text>Cancel</Text>
@@ -226,6 +225,7 @@ class MainScreen extends Component {
                                     <Text>Loading ...</Text>
                                 </Button>
                                 }
+                            </View>
                             </View>
                         </RBSheet>
                     
