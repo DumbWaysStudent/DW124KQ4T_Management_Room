@@ -131,7 +131,7 @@ class CustomerScreen extends Component {
     }
     }
     successUpdateCustomer = () =>{
-        this[ RBSheet + this.props.updateCustomer.data.id].close();
+        this[ RBSheet + 1].close();
         this.props.editCustomer(this.props.updateCustomer.data);
     }
 

@@ -6,7 +6,6 @@ import { createCheckoutPending, createCheckoutFullfilled, createCheckoutRejected
 class Checkout {
     store = (token, data, id)=>{
         return dispatch => {
-            console.log("--------------loading")
             dispatch(createCheckoutPending());
             axios({
                 method: 'PUT',
@@ -14,10 +13,8 @@ class Checkout {
                 url: `/order/${id}`,
                 data: data
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(createCheckoutFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(createCheckoutRejected(err.response));
                 }

@@ -19,9 +19,9 @@ class LoginScreen extends React.Component {
 
     }
 
-    componentDidMount(){
-        this.handleInputUsername("");
-        this.handleInputPassword("");
+    async componentDidMount(){
+        await this.handleInputUsername("");
+        await this.handleInputPassword("");
     }
 
     handleShowHidePassword = () => {

@@ -17,7 +17,6 @@ const createRoom = (state = initialState, action) => {
         } 
       
       case CREATE_ROOM_FULLFILLED:
-            console.log("reducer fullfilled");
         return {
           ...state,
           isLoading: false,

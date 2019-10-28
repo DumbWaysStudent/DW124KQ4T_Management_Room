@@ -6,7 +6,6 @@ export const createRoomPending = () => {
     }
   }
   export const createRoomFullfilled = (data) => {
-      console.log("action fullfilled");
     return {
       type: CREATE_ROOM_FULLFILLED,
       payload: data

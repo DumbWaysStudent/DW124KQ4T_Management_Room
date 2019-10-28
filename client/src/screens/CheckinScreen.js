@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button, Fab, Icon, Picker } from "native-base";
 import { FlatList, RefreshControl, Dimensions, TouchableOpacity, Image } from "react-native";
+import { withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Checkin  from '../services/Checkin';
@@ -45,6 +46,24 @@ class CheckinScreen extends Component {
         this.props.getAll(this.props.auth.data.token)
         this.props.getAllCustomer(this.props.auth.data.token);
         }
+
+        setInterval(()=>{
+            if(this.props.getCheckin.data){
+                let checkin = this.props.getCheckin.data;
+                let today = (new Date).getTime();
+                checkin.forEach((item)=>{
+                    if(item.order && item.order.isBooked){
+                        if((new Date(item.order.orderEndTime).getTime())<= today){
+                            if(!this.props.createCheckout.isLoading){
+                                if(this.props.auth.data){
+                                    this.props.storeCheckout(this.props.auth.data.token, {roomId: item.id}, item.order.id);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        },1000);
     }
 
     successGetRoom = () => {
@@ -95,14 +114,15 @@ class CheckinScreen extends Component {
     onCheckin = () => {
         let duration = parseInt(this.state.duration);
         let today = (new Date()).getTime();
-        let endtime = today+(duration*60*1000);
+        let endtime = new Date((today+(duration*60*1000)));
+        let dt = `${endtime.getFullYear()}-${((endtime.getMonth()+1)<10)?"0"+(endtime.getMonth()+1):(endtime.getMonth()+1)}-${((endtime.getDate())<10)?"0"+(endtime.getDate()):(endtime.getDate())} ${((endtime.getHours())<10)?"0"+(endtime.getHours()):(endtime.getHours())}:${((endtime.getMinutes())<10)?"0"+(endtime.getMinutes()):(endtime.getMinutes())}:${((endtime.getSeconds())<10)?"0"+(endtime.getSeconds()):(endtime.getSeconds())}`;
 
         if(this.props.auth.data){
             this.props.storeCheckin(this.props.auth.data.token, {
                 roomId: this.state.room.id,
                 customerId: this.state.customerId,
                 duration: duration,
-                orderEndTime: endtime
+                orderEndTime: dt
             });
         }
     }
@@ -185,14 +205,13 @@ class CheckinScreen extends Component {
                     <CardItem>
                             <Body>
                             <FlatList
-                                style={{}}
                                 data = {this.props.getCheckin.data}
                                 keyExtractor = {item => item.id.toString()}
                                 numColumns= {3}
                                 renderItem = {({item})=>(
                                     <>
                                     <TouchableOpacity onPress={this.checkin.bind(this, ((typeof item.order !== "undefined")?((item.order.isBooked)?false:true):true), item.id)}>
-                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),margin: 1, height: width/3, backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"green"):"green") }}><Text>{item.name}</Text></View>
+                                        <View style={{borderColor:"#2ecc71", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)), backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"#27ae60"):"#27ae60"), borderRadius: 10 }}><Text style={{color: "#fff"}}>{item.name}</Text></View>
                                     </TouchableOpacity>
                                     </>
                                 )}
@@ -238,9 +257,15 @@ class CheckinScreen extends Component {
                                     <Button onPress={this.onCancelCheckIn} danger style={{flex:1, justifyContent: "center"}}>
                                         <Text>Cancel</Text>
                                     </Button>
+                                    {(!this.props.createCheckin.isLoading && this.props.createCheckin.data===null)?
                                     <Button onPress={this.onCheckin} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
                                         <Text>Save</Text>
                                     </Button>
+                                    :
+                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
+                                        <Text>Loading ...</Text>
+                                    </Button>
+                                    }
                                 </View>
                             </View>
                     </RBSheet>
@@ -270,9 +295,15 @@ class CheckinScreen extends Component {
                                     <Button onPress={this.onCancelCheckOut} danger style={{flex:1, justifyContent: "center"}}>
                                         <Text>Cancel</Text>
                                     </Button>
+                                    {(!this.props.createCheckout.isLoading && this.props.createCheckout.data===null)?
                                     <Button onPress={this.onCheckout} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
                                         <Text>Checkout</Text>
                                     </Button>
+                                    :
+                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
+                                        <Text>Loading ...</Text>
+                                    </Button>
+                                    }
                                 </View>
                             </View>
                     </RBSheet>
@@ -300,4 +331,4 @@ const mapDispatchToProps = {
     createCheckinReset: Checkin.resetCreateCheckin
   };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CheckinScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigationFocus(CheckinScreen));

@@ -160,8 +160,7 @@ class MainScreen extends Component {
                                 renderItem = {({item})=>(
                                     <>
                                     <TouchableOpacity onPress={this.onDetailRoom.bind(this, item.id)}>
-                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),
-                                        margin: 1, height: width/3 }}><Text>{item.name}</Text></View>
+                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)),borderRadius: 10 }}><Text>{item.name}</Text></View>
                                     </TouchableOpacity>
                                     </>
                                 )}
@@ -187,9 +186,15 @@ class MainScreen extends Component {
                                     <Button onPress={this.onCancel} danger style={{flex:1, justifyContent: "center"}}>
                                         <Text>Cancel</Text>
                                     </Button>
+                                    {(!this.props.getRoom.isLoading && this.props.getRoom.data!=null)?
                                     <Button onPress={this.onCreateRoom} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
                                         <Text>Save</Text>
                                     </Button>
+                                    :
+                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
+                                        <Text>Loading ...</Text>
+                                    </Button>
+                                    }
                                 </View>
                             </View>
                     </RBSheet>
@@ -212,9 +217,15 @@ class MainScreen extends Component {
                                 <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
                                     <Text>Cancel</Text>
                                 </Button>
+                                {(!this.props.updateRoom.isLoading && this.props.updateRoom.data===null)?
                                 <Button onPress={this.onEditRoom.bind(this, this.state.editId)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
                                     <Text>Update</Text>
                                 </Button>
+                                :
+                                <Button disabled style={{flex:1, justifyContent: "center"}}>
+                                    <Text>Loading ...</Text>
+                                </Button>
+                                }
                             </View>
                         </RBSheet>
                     

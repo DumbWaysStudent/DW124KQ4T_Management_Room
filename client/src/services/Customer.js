@@ -9,17 +9,14 @@ import { updateCustomerPending, updateCustomerFullfilled, updateCustomerRejected
 class Customer {
     index = (token) => {
         return dispatch => {
-            console.log("--------------loading")
             dispatch(getCustomerPending());
             axios({
                 method: 'GET',
                 headers: { 'content-type': 'application/json', "authorization": `Bearer ${token}` },
                 url: `/customers`
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(getCustomerFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(getCustomerRejected(err.response));
                 }
@@ -31,7 +28,6 @@ class Customer {
     }
     store = (token,data) => {
         return dispatch => {
-            console.log("--------------loading")
             dispatch(createCustomerPending());
             axios({
                 method: 'POST',
@@ -39,10 +35,8 @@ class Customer {
                 data: data,
                 url: `/customer`
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(createCustomerFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(createCustomerRejected(err.response));
                 }
@@ -54,7 +48,6 @@ class Customer {
     }
     update = (token,data,id) => {
         return dispatch => {
-            console.log("--------------loading")
             dispatch(updateCustomerPending());
             console.log(data);
             axios({
@@ -63,10 +56,8 @@ class Customer {
                 data: data,
                 url: `/customer/${id}`
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(updateCustomerFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(updateCustomerRejected(err.response));
                 }

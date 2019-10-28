@@ -7,17 +7,14 @@ import { createCheckinPending, createCheckinFullfilled, createCheckinRejected, r
 class Checkin {
     index = (token) => {
         return dispatch => {
-            console.log("--------------loading")
             dispatch(getCheckinPending());
             axios({
                 method: 'GET',
                 headers: { 'content-type': 'application/json', "authorization": `Bearer ${token}` },
                 url: `/checkin`
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(getCheckinFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(getCheckinRejected(err.response));
                 }
@@ -29,7 +26,6 @@ class Checkin {
     }
     store = (token, data)=>{
         return dispatch => {
-            console.log("--------------loading")
             dispatch(createCheckinPending());
             axios({
                 method: 'POST',
@@ -37,10 +33,8 @@ class Checkin {
                 url: `/checkin`,
                 data: data
             }).then(result=>{
-                console.log("--------------ntap")
                 dispatch(createCheckinFullfilled(result.data.data));
             }).catch(err=>{
-                console.log("--------------error")
                 if(typeof err.response !== "undefined"){
                     dispatch(createCheckinRejected(err.response));
                 }
