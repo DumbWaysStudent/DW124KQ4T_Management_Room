@@ -13,7 +13,9 @@ class MainScreen extends Component {
 
         this.state = {
             inputName: "",
-            editInputName:""
+            editInputName:"",
+            editId:"",
+            editName:""
         }
     }
     componentDidMount(){
@@ -36,9 +38,11 @@ class MainScreen extends Component {
             let data = this.props.getRoom.data.filter((item)=>item.id===id);
             if(data.length > 0 ){
                 this.setState({
-                    editInputName:data[0].name
+                    editInputName:data[0].name,
+                    editName:data[0].name,
+                    editId: id
                 });
-                this[RBSheet + id].open();
+                this[RBSheet + 1].open();
             }
         }
     }
@@ -90,7 +94,7 @@ class MainScreen extends Component {
     }
 
     onEditCancel = (id) => {
-        this[RBSheet + id].close();
+        this[RBSheet + 1].close();
     }
 
     onEditRoom = (id) => {
@@ -102,7 +106,7 @@ class MainScreen extends Component {
 
     successUpdateRoom = () =>{
         this.props.editRoom(this.props.updateRoom.data);
-        this[RBSheet + this.props.updateRoom.data.id].close();
+        this[RBSheet + 1].close();
     }
 
     failedUpdateRoom = () => {
@@ -159,30 +163,6 @@ class MainScreen extends Component {
                                         <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),
                                         margin: 1, height: width/3 }}><Text>{item.name}</Text></View>
                                     </TouchableOpacity>
-                                    <RBSheet
-                                    ref={ref => {
-                                        this[RBSheet + item.id] = ref;
-                                    }}
-                                    duration={250}
-                                    customStyles={{
-                                        container: {}
-                                    }}
-                                    >
-                                        <View style={{padding: 10}}>
-                                        <View><Text style={{fontSize: 30}}>Edit: {item.name}</Text></View>
-                                        <Item>
-                                            <Input value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
-                                        </Item>
-                                        </View>
-                                        <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                            <Button onPress={this.onEditCancel.bind(this, item.id)} danger style={{flex:1, justifyContent: "center"}}>
-                                                <Text>Cancel</Text>
-                                            </Button>
-                                            <Button onPress={this.onEditRoom.bind(this, item.id)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                                <Text>Update</Text>
-                                            </Button>
-                                        </View>
-                                    </RBSheet>
                                     </>
                                 )}
                             />
@@ -201,7 +181,7 @@ class MainScreen extends Component {
                             <View style={{padding: 10}}>
                                 <View><Text style={{fontSize: 30}}>Add Room</Text></View>
                                 <Item>
-                                    <Input value={this.state.inputName} placeholder="Name" onChangeText={this.onChangeName} />
+                                    <Input autoFocus={true} value={this.state.inputName} placeholder="Name" onChangeText={this.onChangeName} />
                                 </Item>
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
                                     <Button onPress={this.onCancel} danger style={{flex:1, justifyContent: "center"}}>
@@ -213,6 +193,30 @@ class MainScreen extends Component {
                                 </View>
                             </View>
                     </RBSheet>
+                    <RBSheet
+                        ref={ref => {
+                            this[RBSheet + 1] = ref;
+                        }}
+                        duration={250}
+                        customStyles={{
+                            container: {}
+                        }}
+                        >
+                            <View style={{padding: 10}}>
+                            <View><Text style={{fontSize: 30}}>Edit: {this.state.editName}</Text></View>
+                            <Item>
+                                <Input autoFocus={true} value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
+                            </Item>
+                            </View>
+                            <View style={{flex:1, flexDirection:"row",marginTop:20}}>
+                                <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
+                                    <Text>Cancel</Text>
+                                </Button>
+                                <Button onPress={this.onEditRoom.bind(this, this.state.editId)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
+                                    <Text>Update</Text>
+                                </Button>
+                            </View>
+                        </RBSheet>
                     
                 </Container>
             </>

@@ -18,7 +18,9 @@ class CustomerScreen extends Component {
             editInputName:"",
             editInputIdentity:"",
             editInputPhone:"",
-            refreshing: false
+            refreshing: false,
+            identityNumber: "",
+            editId: ""
         }
     }
     componentDidMount(){
@@ -88,16 +90,21 @@ class CustomerScreen extends Component {
     onDetailCustomer = (id) => {
         let data = this.props.getCustomer.data.filter((item)=>item.id===id);
         if(data.length > 0 ){
+            let state = this.state;
             this.setState({
+                ...state,
                 editInputName:data[0].name,
                 editInputIdentity:data[0].identityNumber,
                 editInputPhone:data[0].phoneNumber,
+                focusInputEditCustomer: true,
+                identityNumber:data[0].identityNumber,
+                editId: id
             });
-            this[RBSheet + id].open();
+            this[RBSheet + 1].open();
         }
     }
     onEditCancel = (id) => {
-        this[RBSheet + id].close();
+        this[RBSheet + 1].close();
     }
     onChangeEditName = (text) => {
         this.setState({
@@ -140,6 +147,12 @@ class CustomerScreen extends Component {
             alert(str);
             this.props.resetUpdateCustomer()
         }
+    }
+    fabAddCustomer = () => {
+        this.setState({
+            focusInputAddCustomer: true
+        })
+        this.RBSheet.open();
     }
     render(){
         return (
@@ -190,37 +203,6 @@ class CustomerScreen extends Component {
                                                 </View>
                                             </View>
                                             </TouchableOpacity>
-                                            <RBSheet
-                                                ref={ref => {
-                                                    this[RBSheet + item.id] = ref;
-                                                }}
-                                                height={300}
-                                                duration={250}
-                                                customStyles={{
-                                                    container: {}
-                                                }}
-                                                >
-                                                        <View style={{padding: 10}}>
-                                                            <View><Text style={{fontSize: 30}}>Edit Customer: {item.identityNumber}</Text></View>
-                                                            <Item>
-                                                                <Input value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
-                                                            </Item>
-                                                            <Item>
-                                                                <Input value={this.state.editInputIdentity} placeholder="Identity Number" onChangeText={this.onChangeEditIdentity} />
-                                                            </Item>
-                                                            <Item>
-                                                                <Input value={this.state.editInputPhone} placeholder="Phone Number" onChangeText={this.onChangeEditPhone} />
-                                                            </Item>
-                                                            <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                                                <Button onPress={this.onEditCancel.bind(this, item.id)} danger style={{flex:1, justifyContent: "center"}}>
-                                                                    <Text>Cancel</Text>
-                                                                </Button>
-                                                                <Button onPress={this.onUpdateCustomer.bind(this, item.id)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                                                    <Text>Update</Text>
-                                                                </Button>
-                                                            </View>
-                                                        </View>
-                                                </RBSheet>
                                         </>
                                     )}
                                     />
@@ -233,13 +215,14 @@ class CustomerScreen extends Component {
                         containerStyle={{ }}
                         style={{ backgroundColor: "#2980b9"}}
                         position="bottomRight"
-                        onPress={() => {this.RBSheet.open();}}>
+                        onPress={this.fabAddCustomer}>
                         <Icon name="plus" type="FontAwesome" />
                     </Fab>
                     <RBSheet
                     ref={ref => {
                         this.RBSheet = ref;
                     }}
+                    closeOnDragDown={true}
                     height={300}
                     duration={250}
                     customStyles={{
@@ -249,7 +232,7 @@ class CustomerScreen extends Component {
                             <View style={{padding: 10}}>
                                 <View><Text style={{fontSize: 30}}>Add Customer</Text></View>
                                 <Item>
-                                    <Input value={this.state.inputName} placeholder="Name" onChangeText={this.onChangeName} />
+                                    <Input autoFocus={true} value={this.state.inputName} placeholder="Name" onChangeText={this.onChangeName} />
                                 </Item>
                                 <Item>
                                     <Input value={this.state.inputIdentity} placeholder="Identity Number" onChangeText={this.onChangeIdentity} />
@@ -267,6 +250,38 @@ class CustomerScreen extends Component {
                                 </View>
                             </View>
                     </RBSheet>
+                    <RBSheet
+                        ref={ref => {
+                            this[RBSheet + 1] = ref;
+                        }}
+                        closeOnDragDown={true}
+                        height={350}
+                        duration={250}
+                        customStyles={{
+                            container: {}
+                        }}
+                        >
+                                <View style={{padding: 10}}>
+                                    <View><Text style={{fontSize: 30}}>Edit Customer: {this.state.identityNumber}</Text></View>
+                                    <Item>
+                                        <Input autoFocus={true} value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
+                                    </Item>
+                                    <Item>
+                                        <Input value={this.state.editInputIdentity} placeholder="Identity Number" onChangeText={this.onChangeEditIdentity} />
+                                    </Item>
+                                    <Item>
+                                        <Input value={this.state.editInputPhone} placeholder="Phone Number" onChangeText={this.onChangeEditPhone} />
+                                    </Item>
+                                    <View style={{flex:1, flexDirection:"row",marginTop:20}}>
+                                        <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
+                                            <Text>Cancel</Text>
+                                        </Button>
+                                        <Button onPress={this.onUpdateCustomer.bind(this, this.state.editId)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
+                                            <Text>Update</Text>
+                                        </Button>
+                                    </View>
+                                </View>
+                        </RBSheet>
                 </Container>
             </>
         );
