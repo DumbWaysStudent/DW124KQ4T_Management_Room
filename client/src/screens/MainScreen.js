@@ -17,7 +17,9 @@ class MainScreen extends Component {
         }
     }
     componentDidMount(){
+        if(this.props.auth.data){
         this.props.getAll(this.props.auth.data.token);
+        }
     }
     successGetRoom(){
         
@@ -62,7 +64,9 @@ class MainScreen extends Component {
     }
 
     onCreateRoom = () => {
+        if(this.props.auth.data){
         this.props.onCreateRoom(this.props.auth.data.token, {name: this.state.inputName});
+        }
     }
 
     successCreateRoom = () => {
@@ -72,7 +76,17 @@ class MainScreen extends Component {
     }
 
     failedCreateRoom = () => {
-        console.log(this.props.createRoom.error);
+        if(typeof this.props.createRoom.error !=="undefined" && typeof this.props.createRoom.error.data !=="undefined" && typeof this.props.createRoom.error.data.errors !=="undefined"){
+            let str = ""
+            let error = this.props.createRoom.error.data.errors;
+            for(var key in error){
+                error[key].forEach((item, i)=>{
+                    str = str + item+"\n";
+                });
+            }
+            alert(str);
+            this.props.resetCreateRoom()
+        }
     }
 
     onEditCancel = (id) => {
@@ -80,7 +94,9 @@ class MainScreen extends Component {
     }
 
     onEditRoom = (id) => {
+        if(this.props.auth.data){
         this.props.onUpdateRoom(this.props.auth.data.token, {name:this.state.editInputName}, id);
+        }
         // this[RBSheet + id].close();
     }
 
@@ -90,7 +106,17 @@ class MainScreen extends Component {
     }
 
     failedUpdateRoom = () => {
-        console.log(this.props.updateRoom.error);
+        if(typeof this.props.updateRoom.error !=="undefined" && typeof this.props.updateRoom.error.data !=="undefined" && typeof this.props.updateRoom.error.data.errors !=="undefined"){
+            let str = ""
+            let error = this.props.updateRoom.error.data.errors;
+            for(var key in error){
+                error[key].forEach((item, i)=>{
+                    str = str + item+"\n";
+                });
+            }
+            alert(str);
+            this.props.resetUpdateRoom();
+        }
     }
 
 
@@ -116,7 +142,8 @@ class MainScreen extends Component {
                     </Header>
                     <Content refreshControl={
                                     <RefreshControl
-                                        onRefresh={this.props.getAll.bind(this, this.props.auth.data.token)}
+                                        onRefresh={((
+                                            (this.props.auth.data))?this.props.getAll.bind(this, this.props.auth.data.token):{})}
                                         refreshing = {this.props.getRoom.isLoading} />
                                 }>
                         <CardItem>
@@ -207,7 +234,9 @@ const mapDispatchToProps = {
     onCreateRoom: Room.store,
     addRoom: Room.addRoom,
     onUpdateRoom: Room.update,
-    editRoom: Room.editRoom
+    editRoom: Room.editRoom,
+    resetCreateRoom: Room.resetCreateRoom,
+    resetUpdateRoom: Room.resetUpdateRoom
   };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

@@ -21,7 +21,10 @@ class CustomerScreen extends Component {
         }
     }
     componentDidMount(){
+
+        if(this.props.auth.data){
         this.props.getAll(this.props.auth.data.token);
+        }
     }
     onChangeName = (text) => {
         this.setState({
@@ -39,11 +42,13 @@ class CustomerScreen extends Component {
         });
     }
     onCreateCustomer = () => {
+        if(this.props.auth.data){
         this.props.onCreateCustomer(this.props.auth.data.token, {
             name: this.state.inputName,
             identity: this.state.inputIdentity,
             phone: this.state.inputPhone
         });
+    }
     }
     onCancel = () => {
         this.RBSheet.close();
@@ -55,7 +60,17 @@ class CustomerScreen extends Component {
     }
 
     failedCreateCustomer = () => {
-        console.log(this.props.createCustomer.error);
+        if(typeof this.props.createCustomer.error !=="undefined" && typeof this.props.createCustomer.error.data !=="undefined" && typeof this.props.createCustomer.error.data.errors !=="undefined"){
+            let str = ""
+            let error = this.props.createCustomer.error.data.errors;
+            for(var key in error){
+                error[key].forEach((item, i)=>{
+                    str = str + item+"\n";
+                });
+            }
+            alert(str);
+            this.props.resetCreateCustomer()
+        }
     }
 
     onDetailCustomer = (id) => {
@@ -88,11 +103,13 @@ class CustomerScreen extends Component {
         });
     }
     onUpdateCustomer = (id) => {
+        if(this.props.auth.data){
         this.props.onUpdateCustomer(this.props.auth.data.token, {
             name:this.state.editInputName,
             identity:this.state.editInputIdentity,
             phone:this.state.editInputPhone,
         }, id);
+    }
     }
     successUpdateCustomer = () =>{
         this[ RBSheet + this.props.updateCustomer.data.id].close();
@@ -100,7 +117,17 @@ class CustomerScreen extends Component {
     }
 
     failedUpdateCustomer = () => {
-        console.log(this.props.updateCustomer.error);
+        if(typeof this.props.updateCustomer.error !=="undefined" && typeof this.props.updateCustomer.error.data !=="undefined" && typeof this.props.updateCustomer.error.data.errors !=="undefined"){
+            let str = ""
+            let error = this.props.updateCustomer.error.data.errors;
+            for(var key in error){
+                error[key].forEach((item, i)=>{
+                    str = str + item+"\n";
+                });
+            }
+            alert(str);
+            this.props.resetUpdateCustomer()
+        }
     }
     render(){
         return (
@@ -246,6 +273,8 @@ const mapDispatchToProps = {
     addCustomer: Customer.addCustomer,
     editCustomer: Customer.editCustomer,
     onUpdateCustomer: Customer.update,
+    resetCreateCustomer: Customer.resetCreateCustomer,
+    resetUpdateCustomer: Customer.resetUpdateCustomer
 
 };
 

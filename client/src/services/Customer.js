@@ -83,6 +83,18 @@ class Customer {
         }
     }
 
+    resetCreateCustomer = () => {
+        return dispatch=>{
+            dispatch(resetCreateCustomer());
+        }
+    } 
+
+    resetUpdateCustomer = () => {
+        return dispatch=>{
+            dispatch(resetUpdateCustomer());
+        }
+    } 
+
     resetGetCustomer = ()=>{
         return dispatch=>{dispatch(resetGetCustomer())};
     }

@@ -9,6 +9,13 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'roomId',
       as: 'checkins'
     });
+
+    room.belongsToMany(models.customer, {
+      through: 'orders',
+      as: 'customers',
+      foreignKey: 'roomId',
+      otherKey: 'customerId',
+    });
   };
   return room;
 };

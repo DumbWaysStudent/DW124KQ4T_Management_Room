@@ -94,8 +94,11 @@ class LoginScreen extends React.Component {
     }
     
     loginSuccess = () =>{
+
+        if(this.props.auth.data){
             Auth.save(this.props.auth.data);
             this.props.navigation.navigate('Main');
+        }
     }
 
     loginFail = () => {

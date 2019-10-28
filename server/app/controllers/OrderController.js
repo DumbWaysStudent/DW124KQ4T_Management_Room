@@ -31,6 +31,16 @@ OrderController.prototype = {
                     ['createdAt', 'ASC']
                 ]
             });
+            checkData = JSON.parse(JSON.stringify(checkData));
+            checkData.forEach((item, index)=>{
+                if(item.checkins.length>0){
+                    checkData[index].order = item.checkins[0];
+                    checkData[index].customer = item.checkins[0].customer;
+                    delete checkData[index].checkins[0].customer;
+
+                }
+                delete checkData[index].checkins;
+            });
 
             return res.status(200).json({
                 msg: "Success!",
@@ -38,6 +48,7 @@ OrderController.prototype = {
             });
         }
         catch(error){
+            console.log(error);
             return res.status(500).json({
                 msg: "Something went wrong!"
             });
@@ -101,6 +112,14 @@ OrderController.prototype = {
                         ['createdAt', 'DESC']
                     ]
                 }]})
+                orderData = JSON.parse(JSON.stringify(orderData));
+                    if(orderData.checkins.length>0){
+                        orderData.order = orderData.checkins[0];
+                        orderData.customer = orderData.checkins[0].customer;
+                        delete orderData.checkins[0].customer;
+    
+                    }
+                    delete orderData.checkins;
                 return res.status(200).json({
                     msg: "Success!",
                     data: orderData
@@ -140,7 +159,14 @@ OrderController.prototype = {
                     ['createdAt', 'DESC']
                 ]
             }]})
+            orderData = JSON.parse(JSON.stringify(orderData));
+            if(orderData.checkins.length>0){
+                orderData.order = orderData.checkins[0];
+                orderData.customer = orderData.checkins[0].customer;
+                delete orderData.checkins[0].customer;
 
+            }
+            delete orderData.checkins;
             return res.status(200).json({
                 msg: "Success!",
                 data: orderData

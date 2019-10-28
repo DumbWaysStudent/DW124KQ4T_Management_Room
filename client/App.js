@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "native-base";
+import { View, Icon } from "native-base";
 import { Provider } from 'react-redux';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
@@ -25,7 +25,7 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (
-          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+          <Icon type="FontAwesome" name="check-circle" style={{color: tintColor, fontSize: 21}} />
         ),
         headerTransparent: true,
         headerLeft: null
@@ -38,7 +38,7 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (
-          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+          <Icon type="FontAwesome" name="bed" style={{color: tintColor, fontSize: 21}} />
         ),
         headerTransparent: true,
         headerLeft: null
@@ -51,7 +51,7 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (
-          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+          <Icon type="FontAwesome" name="id-card-o" style={{color: tintColor, fontSize: 21}} />
         ),
         headerTransparent: true,
         headerLeft: null
@@ -64,7 +64,7 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (
-          <Icon type="FontAwesome" name="tablet" style={{color: tintColor}} />
+          <Icon type="FontAwesome" name="gear" style={{color: tintColor, fontSize: 21}} />
         ),
         headerTransparent: true,
         headerLeft: null

@@ -10,7 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     customer.hasMany(models.order, {
       foreignKey: 'customerId',
-      as: 'orders'
+      as: 'checkins'
+    });
+    customer.belongsToMany(models.room, {
+      through: 'orders',
+      as: 'rooms',
+      foreignKey: 'customerId',
+      otherKey: 'roomId'
     });
   };
   return customer;

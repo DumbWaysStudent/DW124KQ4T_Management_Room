@@ -56,6 +56,11 @@ class Checkin {
             dispatch(resetCreateCheckin());
         }
     }
+    resetCreateCheckin = () => {
+        return dispatch=>{
+            dispatch(resetCreateCheckin());
+        }
+    }
 
     resetGetCheckin = ()=>{
         return dispatch=>{dispatch(resetGetCheckin())};

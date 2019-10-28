@@ -19,17 +19,36 @@ class CheckinScreen extends Component {
             customers: (this.props.getCustomer.length>0)?this.props.getCustomer.data:[],
             count:0,
             duration: 0,
-            customerId:""
+            customerId:"",
+            refreshing: false
         }
     }
 
-    componentDidMount(){
+    onLoad=()=>{
+        this.setState({
+            refreshing:true
+        });
+
+        if(this.props.auth.data){
         this.props.getAll(this.props.auth.data.token)
         this.props.getAllCustomer(this.props.auth.data.token);
+        }
+
+        this.setState({
+            refreshing:false
+        });
+    }
+
+    componentDidMount(){
+
+        if(this.props.auth.data){
+        this.props.getAll(this.props.auth.data.token)
+        this.props.getAllCustomer(this.props.auth.data.token);
+        }
     }
 
     successGetRoom = () => {
-        console.log(this.props.getCheckin.data)
+        // console.log(this.props.getCheckin.data)
     }
 
     failedGetRoom = () => {
@@ -37,39 +56,29 @@ class CheckinScreen extends Component {
     }
 
     checkin = (checkin, id) => {
-        let room = this.props.getCheckin.data.filter((item)=>item.id===id);
-        if(checkin){
-            if(room.length>0){
-                room = room[0]
-                this.setState({
-                    room
-                });
-            }
+        let index = this.props.getCheckin.data.findIndex(item => item.id === id);
+        let room = this.props.getCheckin.data[index];
+        let obj = {room};
+        if(room.order){
+            obj.duration = room.order.duration.toString();
             
-            this.RBSheet.open();
         }
-        else{
-            if(room.length>0){
-                room = room[0]
-                this.setState({
-                    customerId: room.checkins[0].customer.id.toString(),
-                    duration: room.checkins[0].duration.toString(),
-                    room
-                });
+            if(checkin){
+                delete obj.room.customer;
+                delete obj.room.customer;
+                obj.customerId = null;
+                obj.duration = (0).toString();
+                this.setState(obj)
+                this.RBSheet.open();
             }
-            this[RBSheet+1].open();
-        }
+            else{
+
+                this.setState(obj)
+                this[RBSheet+1].open();
+            }
     }
 
-    successGetCustomer = () => {
-        if(this.state.count===0){
-        let count = this.state.count + 1;
-        this.setState({
-            customers: this.props.getCustomer.data,
-            count: count
-        });
-    }
-    }
+    
 
     onDuration = (text) => {
         this.setState({
@@ -87,28 +96,48 @@ class CheckinScreen extends Component {
         let duration = parseInt(this.state.duration);
         let today = (new Date()).getTime();
         let endtime = today+(duration*60*1000);
-        this.props.storeCheckin(this.props.auth.data.token, {
-            roomId: this.state.room.id,
-            customerId: this.state.customerId,
-            duration: duration,
-            orderEndTime: endtime
-        });
+
+        if(this.props.auth.data){
+            this.props.storeCheckin(this.props.auth.data.token, {
+                roomId: this.state.room.id,
+                customerId: this.state.customerId,
+                duration: duration,
+                orderEndTime: endtime
+            });
+        }
     }
     successCreateCheckin=()=>{
+        this.setState({
+            duration: (0).toString()
+        });
         this.RBSheet.close();
         this.props.editCheckin(this.props.createCheckin.data);
     }
 
     failCreateCheckin = () => {
-        console.log(this.props.createCheckin.error);
+        if(typeof this.props.createCheckin.error !=="undefined" && typeof this.props.createCheckin.error.data !=="undefined" && typeof this.props.createCheckin.error.data.errors !=="undefined"){
+            let str = ""
+            let error = this.props.createCheckin.error.data.errors;
+            for(var key in error){
+                error[key].forEach((item, i)=>{
+                    str = str + item+"\n";
+                });
+            }
+            alert(str);
+            this.props.createCheckinReset()
+        }
     }
 
     onCheckout = () => {
-        this.props.storeCheckout(this.props.auth.data.token, {roomId:this.state.room.id}, this.state.room.checkins[0].id);
+        if(this.props.auth.data){
+        this.props.storeCheckout(this.props.auth.data.token, {roomId:this.state.room.id}, this.state.room.order.id);
+        }
     }
 
     successCreateCheckout = () => {
-        console.log("-----=======",this.props.createCheckout.data)
+        this.setState({
+            duration: (0).toString()
+        });
         this.props.editCheckout(this.props.createCheckout.data);
         this[RBSheet+1].close();
 
@@ -136,10 +165,7 @@ class CheckinScreen extends Component {
                 {(!this.props.getCheckin.isLoading && this.props.getCheckin.data!=null)?<>{this.successGetRoom()}</>:<></>}
                 {(!this.props.getCheckin.isLoading && this.props.getCheckin.error!=null)?<>{this.failedGetRoom()}</>:<></>}
 
-                {(!this.props.getCustomer.isLoading && this.props.getCustomer.data!=null)?<>{this.successGetCustomer()}</>:<></>}
-
-                {console.log("=================----------",this.props.getCustomer.data)}
-
+                
                 {(!this.props.createCheckin.isLoading && this.props.createCheckin.data!=null)?<>{this.successCreateCheckin()}</>:<></>}
                 {(!this.props.createCheckin.isLoading && this.props.createCheckin.error!=null)?<>{this.failCreateCheckin()}</>:<></>}
                 {(!this.props.createCheckout.isLoading && this.props.createCheckout.data!=null)?<>{this.successCreateCheckout()}</>:<></>}
@@ -153,7 +179,9 @@ class CheckinScreen extends Component {
                         </Body>
                         <Right></Right>
                     </Header>
-                    <Content>
+                    <Content refreshControl={
+                        <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onLoad} />
+                    }>
                     <CardItem>
                             <Body>
                             <FlatList
@@ -163,8 +191,8 @@ class CheckinScreen extends Component {
                                 numColumns= {3}
                                 renderItem = {({item})=>(
                                     <>
-                                    <TouchableOpacity onPress={this.checkin.bind(this, ((item.checkins.length>0)?((item.checkins[0].isBooked)?false:true):true), item.id)}>
-                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),margin: 1, height: width/3, backgroundColor: ((item.checkins.length>0)?((item.checkins[0].isBooked)?"#ccc":"green"):"green") }}><Text>{item.name}</Text></View>
+                                    <TouchableOpacity onPress={this.checkin.bind(this, ((typeof item.order !== "undefined")?((item.order.isBooked)?false:true):true), item.id)}>
+                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(90/100)),margin: 1, height: width/3, backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"green"):"green") }}><Text>{item.name}</Text></View>
                                     </TouchableOpacity>
                                     </>
                                 )}
@@ -231,8 +259,8 @@ class CheckinScreen extends Component {
                                 <Item disabled>
                                     <Input style={{backgroundColor:"#ccc", marginBottom: 5}} disabled value={(this.state.room)?this.state.room.name:""} placeholder="Name" />
                                 </Item>
-                                <Item>{(this.state.room && this.state.room.checkins[0])?
-                                    <Input value={this.state.room.checkins[0].customer.name+"("+this.state.room.checkins[0].customer.identityNumber+")"} style={{backgroundColor:"#ccc", marginBottom: 5}} placeholder="customer id"/>:<></>}
+                                <Item>{(this.state.room && this.state.room.customer)?
+                                    <Input value={this.state.room.customer.name+"("+this.state.room.customer.identityNumber+")"} style={{backgroundColor:"#ccc", marginBottom: 5}} placeholder="customer id"/>:<></>}
                                 </Item>
                                 <Item>
                                     <Input value={this.state.duration} style={{backgroundColor:"#ccc", marginBottom: 5}}  placeholder="Duration"/>
@@ -268,7 +296,8 @@ const mapDispatchToProps = {
     storeCheckin: Checkin.store,
     editCheckin: Checkin.editCheckin,
     storeCheckout: Checkout.store,
-    editCheckout: Checkout.editCheckout
+    editCheckout: Checkout.editCheckout,
+    createCheckinReset: Checkin.resetCreateCheckin
   };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckinScreen);

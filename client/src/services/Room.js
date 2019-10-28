@@ -61,6 +61,12 @@ class Room {
         }
     }
 
+    resetCreateRoom = () => {
+        return dispatch=>{
+            dispatch(resetCreateRoom());
+        }
+    }
+
     resetGetRoom = ()=>{
         return dispatch=>{dispatch(resetGetRoom())};
     }
@@ -93,6 +99,12 @@ class Room {
     editRoom = (data) => {
         return dispatch=>{
             dispatch(editRoom(data))
+            dispatch(resetUpdateRoom());
+        }
+    }
+
+    resetUpdateRoom = () => {
+        return dispatch=>{
             dispatch(resetUpdateRoom());
         }
     }
