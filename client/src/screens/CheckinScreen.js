@@ -54,10 +54,10 @@ class CheckinScreen extends Component {
                 let today = (new Date).getTime()+(tz);
                 checkin.forEach((item)=>{
                     if(item.order && item.order.isBooked){
-                        console.log("hari ini")
-                        console.log(new Date(today));
-                        console.log("end waktu")
-                        console.log(new Date(item.order.orderEndTime));
+                        // console.log("hari ini")
+                        // console.log(new Date(today));
+                        // console.log("end waktu")
+                        // console.log(new Date(item.order.orderEndTime));
                         if((new Date(item.order.orderEndTime).getTime())<= today){
                             if(!this.props.createCheckout.isLoading){
                                 if(this.props.auth.data){
