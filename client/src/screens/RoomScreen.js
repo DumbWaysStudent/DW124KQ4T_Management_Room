@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button } from "native-base";
+import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button, Icon } from "native-base";
 import { FlatList, RefreshControl, Dimensions, TouchableOpacity } from "react-native";
 import Room  from '../services/Room';
 import { connect } from 'react-redux';
@@ -140,10 +140,9 @@ class RoomScreen extends Component {
                 {(!this.props.updateRoom.isLoading && this.props.updateRoom.error!=null)?<>{this.failedUpdateRoom()}</>:<></>}
 
                 <Container>
-                    <Header style={{backgroundColor: "#2980b9"}}>
-                        <Left></Left>
+                    <Header androidStatusBarColor="#2980b9" style={{backgroundColor: "#2980b9"}}>
                         <Body>
-                            <Title>Room</Title>
+                            <Title style={{fontWeight: "bold"}}>Room</Title>
                         </Body>
                         <Right></Right>
                     </Header>
@@ -162,9 +161,15 @@ class RoomScreen extends Component {
                                 numColumns= {3}
                                 renderItem = {({item})=>(
                                     <>
+                                    {(item.id===0)?
                                     <TouchableOpacity onPress={this.onDetailRoom.bind(this, item.id)}>
-                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)),borderRadius: 10 }}><Text>{item.name}</Text></View>
+                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)),borderRadius: 10 }}><Icon name="plus" type="FontAwesome" style={{color: "#2980b9"}} /></View>
                                     </TouchableOpacity>
+                                    :
+                                    <TouchableOpacity onPress={this.onDetailRoom.bind(this, item.id)}>
+                                        <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)),borderRadius: 10 }}><Text style={{fontSize: 30, color: "#2980b9"}}>{item.name}</Text></View>
+                                    </TouchableOpacity>
+                                    }
                                     </>
                                 )}
                             />
@@ -175,6 +180,7 @@ class RoomScreen extends Component {
                     ref={ref => {
                         this.RBSheet = ref;
                     }}
+                    height={200}
                     duration={250}
                     customStyles={{
                         container: {}
@@ -186,16 +192,17 @@ class RoomScreen extends Component {
                                     <Input autoFocus={true} value={this.state.inputName} placeholder="Name" onChangeText={this.onChangeName} />
                                 </Item>
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                    <Button onPress={this.onCancel} danger style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Cancel</Text>
+                                    <Button rounded onPress={this.onCancel} danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Cancel</Text>
                                     </Button>
+                                    <View style={{flex:1}} />
                                     {(!this.props.getRoom.isLoading && this.props.getRoom.data!=null)?
-                                    <Button onPress={this.onCreateRoom} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                        <Text>Save</Text>
+                                    <Button rounded onPress={this.onCreateRoom} style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Save</Text>
                                     </Button>
                                     :
-                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Loading ...</Text>
+                                    <Button disabled rounded style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Loading ...</Text>
                                     </Button>
                                     }
                                 </View>
@@ -205,6 +212,7 @@ class RoomScreen extends Component {
                         ref={ref => {
                             this[RBSheet + 1] = ref;
                         }}
+                        height={200}
                         duration={250}
                         customStyles={{
                             container: {}
@@ -216,16 +224,17 @@ class RoomScreen extends Component {
                                 <Input autoFocus={true} value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
                             </Item>
                             <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
-                                    <Text>Cancel</Text>
+                                <Button rounded onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                    <Text style={{textTransform: "capitalize"}}>Cancel</Text>
                                 </Button>
+                                <View style={{flex:1}} />
                                 {(!this.props.updateRoom.isLoading && this.props.updateRoom.data===null)?
-                                <Button onPress={this.onEditRoom.bind(this, this.state.editId)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                    <Text>Update</Text>
+                                <Button rounded onPress={this.onEditRoom.bind(this, this.state.editId)} style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                    <Text style={{textTransform: "capitalize"}}>Update</Text>
                                 </Button>
                                 :
-                                <Button disabled style={{flex:1, justifyContent: "center"}}>
-                                    <Text>Loading ...</Text>
+                                <Button rounded disabled style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                    <Text style={{textTransform: "capitalize"}}>Loading ...</Text>
                                 </Button>
                                 }
                             </View>

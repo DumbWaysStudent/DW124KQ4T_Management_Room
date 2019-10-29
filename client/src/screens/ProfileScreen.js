@@ -24,6 +24,12 @@ class ProfileScreen extends Component {
     render(){
         return (<>
             <Container>
+                <Header androidStatusBarColor="#2980b9" style={{backgroundColor: "#2980b9"}}>
+                    <Body>
+                        <Title style={{fontWeight:"bold"}}>Settings</Title>
+                    </Body>
+                    <Right></Right>
+                </Header>
                 <Content>
                     <CardItem>
                         <Body>
@@ -44,8 +50,7 @@ class ProfileScreen extends Component {
                                     </View>
                                 </View>
                             :<></>}
-                            <View></View>
-                            <Button full danger onPress={this.logout}><Title>Logout</Title></Button>
+                            <Button full rounded danger onPress={this.logout} style={{elevation: 0}}><Title>Logout</Title></Button>
                         </Body>
                     </CardItem>
                 </Content>

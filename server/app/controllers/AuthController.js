@@ -108,7 +108,7 @@ AuthController.prototype = {
         else{
             User.create({
                 name: req.body.name,
-                email: req.body.email,
+                username: req.body.username,
                 password: bcrypt.hashSync(req.body.password, 10)
             }).then((result)=>{
                 if(result){
@@ -119,6 +119,7 @@ AuthController.prototype = {
                             id: result.dataValues.id.toString(),
                             image: 'https://i0.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png?fit=256%2C256&quality=100&ssl=1',
                             name: result.dataValues.name,
+                            username: result.dataValues.username,
                             token: token
                         }
                     });

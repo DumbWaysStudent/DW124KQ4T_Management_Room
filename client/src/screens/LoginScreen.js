@@ -122,7 +122,7 @@ class LoginScreen extends React.Component {
                     <CardItem>
                         <Body>
                             <View style={styles.form}>
-                                <H1 style={styles.title}>Hotel WaterDrop</H1>
+                                <H1 style={styles.title}>Hotel WaterFall</H1>
                                 <Text style={styles.subTitle}>Login</Text>
                                 <Item>
                                     <Input placeholder="Username" value={this.state.inputUsername} onChangeText={this.handleInputUsername} />
@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: "#bdc3c7"
+        backgroundColor: "#2980b9"
     },
-    title: {color: "#3498db"},
+    title: {color: "#3498db", fontWeight: "bold"},
     subTitle: {color: "#bdc3c7"},
     buttonEyeIcon: {color:'#3498db'}
   });

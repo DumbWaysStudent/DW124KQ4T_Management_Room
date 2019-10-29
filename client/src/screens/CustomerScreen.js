@@ -163,10 +163,9 @@ class CustomerScreen extends Component {
                 {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.data!=null)?<>{this.successUpdateCustomer()}</>:<></>}
                 {(!this.props.updateCustomer.isLoading && this.props.updateCustomer.error!=null)?<>{this.failedUpdateCustomer()}</>:<></>}
                 <Container>
-                    <Header style={{backgroundColor: "#2980b9"}}>
-                        <Left></Left>
+                    <Header androidStatusBarColor="#2980b9" style={{backgroundColor: "#2980b9"}}>
                         <Body>
-                            <Title>Customer</Title>
+                            <Title style={{fontWeight: "bold"}}>Customer</Title>
                         </Body>
                         <Right></Right>
                     </Header>
@@ -213,7 +212,7 @@ class CustomerScreen extends Component {
                         active={false}
                         direction="up"
                         containerStyle={{ }}
-                        style={{ backgroundColor: "#2980b9"}}
+                        style={{ backgroundColor: "#2980b9", elevation: 0}}
                         position="bottomRight"
                         onPress={this.fabAddCustomer}>
                         <Icon name="plus" type="FontAwesome" />
@@ -223,7 +222,7 @@ class CustomerScreen extends Component {
                         this.RBSheet = ref;
                     }}
                     closeOnDragDown={true}
-                    height={300}
+                    height={320}
                     duration={250}
                     customStyles={{
                         container: {}
@@ -241,11 +240,12 @@ class CustomerScreen extends Component {
                                     <Input value={this.state.inputPhone} placeholder="Phone Number" onChangeText={this.onChangePhone} />
                                 </Item>
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                    <Button onPress={this.onCancel} danger style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Cancel</Text>
+                                    <Button onPress={this.onCancel} rounded danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform:"capitalize"}}>Cancel</Text>
                                     </Button>
-                                    <Button onPress={this.onCreateCustomer} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                        <Text>Save</Text>
+                                    <View style={{flex: 1}} />
+                                    <Button onPress={this.onCreateCustomer} rounded style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                        <Text style={{textTransform:"capitalize"}}>Save</Text>
                                     </Button>
                                 </View>
                             </View>
@@ -255,14 +255,14 @@ class CustomerScreen extends Component {
                             this[RBSheet + 1] = ref;
                         }}
                         closeOnDragDown={true}
-                        height={350}
+                        height={320}
                         duration={250}
                         customStyles={{
                             container: {}
                         }}
                         >
                                 <View style={{padding: 10}}>
-                                    <View><Text style={{fontSize: 30}}>Edit Customer: {this.state.identityNumber}</Text></View>
+                                    <View><Text style={{fontSize: 30}}>Edit Customer</Text></View>
                                     <Item>
                                         <Input autoFocus={true} value={this.state.editInputName} placeholder="Name" onChangeText={this.onChangeEditName} />
                                     </Item>
@@ -273,11 +273,12 @@ class CustomerScreen extends Component {
                                         <Input value={this.state.editInputPhone} placeholder="Phone Number" onChangeText={this.onChangeEditPhone} />
                                     </Item>
                                     <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                        <Button onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:1, justifyContent: "center"}}>
-                                            <Text>Cancel</Text>
+                                        <Button rounded onPress={this.onEditCancel.bind(this, this.state.editId)} danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                            <Text style={{textTransform:"capitalize"}}>Cancel</Text>
                                         </Button>
-                                        <Button onPress={this.onUpdateCustomer.bind(this, this.state.editId)} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                            <Text>Update</Text>
+                                        <View style={{flex:1}} />
+                                        <Button rounded onPress={this.onUpdateCustomer.bind(this, this.state.editId)} style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                            <Text style={{textTransform:"capitalize"}}>Update</Text>
                                         </Button>
                                     </View>
                                 </View>

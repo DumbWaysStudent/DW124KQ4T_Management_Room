@@ -205,10 +205,9 @@ class CheckinScreen extends Component {
                 {(!this.props.createCheckout.isLoading && this.props.createCheckout.error!=null)?<>{this.failCreateCheckout()}</>:<></>}
 
                 <Container>
-                    <Header style={{backgroundColor: "#2980b9"}}>
-                        <Left></Left>
+                    <Header androidStatusBarColor="#2980b9" style={{backgroundColor: "#2980b9"}}>
                         <Body>
-                            <Title>Checkin</Title>
+                            <Title style={{fontWeight:"bold"}}>Checkin</Title>
                         </Body>
                         <Right></Right>
                     </Header>
@@ -217,18 +216,22 @@ class CheckinScreen extends Component {
                     }>
                     <CardItem>
                             <Body>
-                            <FlatList
-                                data = {this.props.getCheckin.data}
-                                keyExtractor = {item => item.id.toString()}
-                                numColumns= {3}
-                                renderItem = {({item})=>(
-                                    <>
-                                    <TouchableOpacity onPress={this.checkin.bind(this, ((typeof item.order !== "undefined")?((item.order.isBooked)?false:true):true), item.id)}>
-                                        <View style={{borderColor:"#2ecc71", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)), backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"#27ae60"):"#27ae60"), borderRadius: 10 }}><Text style={{color: "#fff"}}>{item.name}</Text></View>
-                                    </TouchableOpacity>
-                                    </>
-                                )}
-                            />
+                                <View>
+                                    {(this.props.getCheckin.data && this.props.getCheckin.data.length>0)?
+                                    <FlatList
+                                        data = {this.props.getCheckin.data}
+                                        keyExtractor = {item => item.id.toString()}
+                                        numColumns= {3}
+                                        renderItem = {({item})=>(
+                                            <>
+                                            <TouchableOpacity onPress={this.checkin.bind(this, ((typeof item.order !== "undefined")?((item.order.isBooked)?false:true):true), item.id)}>
+                                                <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)), backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"#3498db"):"#3498db"), borderRadius: 10 }}><Text style={{color: "#fff", fontSize: 30}}>{item.name}</Text></View>
+                                            </TouchableOpacity>
+                                            </>
+                                        )}
+                                    />
+                                    :<><Text>No Room Registered!</Text></>}
+                                </View>
                             </Body>
                         </CardItem>
                     </Content>
@@ -267,16 +270,17 @@ class CheckinScreen extends Component {
                                 </Item>
 
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                    <Button onPress={this.onCancelCheckIn} danger style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Cancel</Text>
+                                    <Button rounded onPress={this.onCancelCheckIn} danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Cancel</Text>
                                     </Button>
+                                    <View style={{flex: 1}} />
                                     {(!this.props.createCheckin.isLoading && this.props.createCheckin.data===null)?
-                                    <Button onPress={this.onCheckin} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                        <Text>Save</Text>
+                                    <Button rounded onPress={this.onCheckin} style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Save</Text>
                                     </Button>
                                     :
-                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Loading ...</Text>
+                                    <Button disabled rounded style={{flex:9, justifyContent: "center",textTransform: "capitalize", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Loading ...</Text>
                                     </Button>
                                     }
                                 </View>
@@ -305,16 +309,17 @@ class CheckinScreen extends Component {
                                 </Item>
 
                                 <View style={{flex:1, flexDirection:"row",marginTop:20}}>
-                                    <Button onPress={this.onCancelCheckOut} danger style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Cancel</Text>
+                                    <Button rounded onPress={this.onCancelCheckOut} danger style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Cancel</Text>
                                     </Button>
+                                    <View style={{flex: 1}} />
                                     {(!this.props.createCheckout.isLoading && this.props.createCheckout.data===null)?
-                                    <Button onPress={this.onCheckout} style={{flex:1, justifyContent: "center", backgroundColor:"#2980b9"}}>
-                                        <Text>Checkout</Text>
+                                    <Button rounded onPress={this.onCheckout} style={{flex:9, justifyContent: "center", backgroundColor:"#2980b9", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Checkout</Text>
                                     </Button>
                                     :
-                                    <Button disabled style={{flex:1, justifyContent: "center"}}>
-                                        <Text>Loading ...</Text>
+                                    <Button rounded disabled style={{flex:9, justifyContent: "center", elevation: 0}}>
+                                        <Text style={{textTransform: "capitalize"}}>Loading ...</Text>
                                     </Button>
                                     }
                                 </View>
