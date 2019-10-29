@@ -75,6 +75,9 @@ class RoomScreen extends Component {
 
     successCreateRoom = () => {
         this.props.addRoom(this.props.createRoom.data);
+        this.setState({
+            inputName:""
+        });
         this.RBSheet.close();
         
     }

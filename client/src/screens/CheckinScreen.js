@@ -48,11 +48,16 @@ class CheckinScreen extends Component {
         }
 
         setInterval(()=>{
-            if(this.props.getCheckin.data){
+            if(this.props.getCheckin.data && this.props.getCheckin.data.length>0){
                 let checkin = this.props.getCheckin.data;
-                let today = (new Date).getTime();
+                let tz = ((new Date()).getTimezoneOffset()/-60)*60*60*1000;
+                let today = (new Date).getTime()+(tz);
                 checkin.forEach((item)=>{
                     if(item.order && item.order.isBooked){
+                        console.log("hari ini")
+                        console.log(new Date(today));
+                        console.log("end waktu")
+                        console.log(new Date(item.order.orderEndTime));
                         if((new Date(item.order.orderEndTime).getTime())<= today){
                             if(!this.props.createCheckout.isLoading){
                                 if(this.props.auth.data){

@@ -25,12 +25,16 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
+    "username": "zlfvsjlaqdzcbh",
+    "password": "587b53d04646faa8d9ae6122201090f8c9f4bc665f01ad08e4a67ea89e15df4f",
+    "database": "d11q8c8ljahbrk",
+    "host": "ec2-174-129-241-114.compute-1.amazonaws.com",
+    "dialect": "postgres",
     "operatorsAliases": false,
+    "dialectOptions": {
+      "useUTC": false
+    },
+    "timezone": "+07:00",
     "pool": {
       "max": 5,
       "min": 0,
