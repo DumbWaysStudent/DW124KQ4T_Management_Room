@@ -12,7 +12,7 @@ import store from './src/_redux/store';
 
 import LoginScreen from './src/screens/LoginScreen';
 import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
-import MainScreen from './src/screens/MainScreen';
+import RoomScreen from './src/screens/RoomScreen';
 import CustomerScreen from './src/screens/CustomerScreen';
 import CheckinScreen from './src/screens/CheckinScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -34,7 +34,7 @@ const MainNavigator = createAppContainer(createMaterialBottomTabNavigator({
     }
   },
   Main: {
-    screen: MainScreen,
+    screen: RoomScreen,
     navigationOptions:({navigation})=>{
       let obj = {
         tabBarIcon: ({ tintColor }) => (

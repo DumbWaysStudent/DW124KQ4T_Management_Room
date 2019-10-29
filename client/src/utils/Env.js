@@ -1,5 +1,5 @@
 
-const baseUrl = "http://192.168.1.29:3000"
+const baseUrl = "http://192.168.1.129:3000"
 
 module.exports = {
     apiUrl: baseUrl+"/api/v2",

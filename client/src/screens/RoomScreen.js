@@ -7,7 +7,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 
 const {width, height} = Dimensions.get('window');
 
-class MainScreen extends Component {
+class RoomScreen extends Component {
     constructor(props){
         super(props);
 
@@ -254,5 +254,5 @@ const mapDispatchToProps = {
     resetUpdateRoom: Room.resetUpdateRoom
   };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(RoomScreen);
 
