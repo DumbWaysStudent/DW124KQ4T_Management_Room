@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Container, Content, Header, Left, Title, Right, Body, CardItem, Input, Item, Button, Fab, Icon, Picker } from "native-base";
-import { FlatList, RefreshControl, Dimensions, TouchableOpacity, Image } from "react-native";
+import { FlatList, RefreshControl, Dimensions, TouchableOpacity, Image, ToastAndroid } from "react-native";
 import { withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -21,7 +21,8 @@ class CheckinScreen extends Component {
             count:0,
             duration: 0,
             customerId:"",
-            refreshing: false
+            refreshing: false,
+            count:[]
         }
     }
 
@@ -52,12 +53,13 @@ class CheckinScreen extends Component {
                 let checkin = this.props.getCheckin.data;
                 let tz = ((new Date()).getTimezoneOffset()/-60)*60*60*1000;
                 let today = (new Date).getTime()+(tz);
-                checkin.forEach((item)=>{
+                checkin.forEach((item, i)=>{
                     if(item.order && item.order.isBooked){
                         // console.log("hari ini")
                         // console.log(new Date(today));
                         // console.log("end waktu")
                         // console.log(new Date(item.order.orderEndTime));
+                        this.countDown(i,item.order.orderEndTime);
                         if((new Date(item.order.orderEndTime).getTime())<= today){
                             if(!this.props.createCheckout.isLoading){
                                 if(this.props.auth.data){
@@ -121,7 +123,7 @@ class CheckinScreen extends Component {
     }
 
     onCheckin = () => {
-        let duration = parseInt(this.state.duration);
+        let duration = Number(this.state.duration);
         let today = (new Date()).getTime();
         let endtime = new Date((today+(duration*60*1000)));
         let dt = `${endtime.getFullYear()}-${((endtime.getMonth()+1)<10)?"0"+(endtime.getMonth()+1):(endtime.getMonth()+1)}-${((endtime.getDate())<10)?"0"+(endtime.getDate()):(endtime.getDate())} ${((endtime.getHours())<10)?"0"+(endtime.getHours()):(endtime.getHours())}:${((endtime.getMinutes())<10)?"0"+(endtime.getMinutes()):(endtime.getMinutes())}:${((endtime.getSeconds())<10)?"0"+(endtime.getSeconds()):(endtime.getSeconds())}`;
@@ -171,6 +173,11 @@ class CheckinScreen extends Component {
         this.setState({
             duration: (0).toString()
         });
+        ToastAndroid.showWithGravity(
+            'Checkout Done!',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+        );
         this.props.editCheckout(this.props.createCheckout.data);
         this[RBSheet+1].close();
 
@@ -190,6 +197,19 @@ class CheckinScreen extends Component {
     }
     onCancelCheckOut = () => {
         this[RBSheet+1].close();
+    }
+
+    countDown = (index, orderEndTime) => {
+
+        let tz = ((new Date()).getTimezoneOffset()/-60)*60*60*1000;
+        let today = (new Date).getTime()+(tz);
+        let endTime = (new Date(orderEndTime)).getTime();
+        let count = this.state.count;
+        count[index] = Math.ceil((endTime - today)/1000)
+        this.setState({
+            count: count
+        });
+
     }
 
     render(){
@@ -222,10 +242,15 @@ class CheckinScreen extends Component {
                                         data = {this.props.getCheckin.data}
                                         keyExtractor = {item => item.id.toString()}
                                         numColumns= {3}
-                                        renderItem = {({item})=>(
+                                        renderItem = {({item, index})=>(
                                             <>
                                             <TouchableOpacity onPress={this.checkin.bind(this, ((typeof item.order !== "undefined")?((item.order.isBooked)?false:true):true), item.id)}>
-                                                <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)), backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"#3498db"):"#3498db"), borderRadius: 10 }}><Text style={{color: "#fff", fontSize: 30}}>{item.name}</Text></View>
+                                                <View style={{borderColor:"#2980b9", borderWidth: 1,alignItems: 'center',justifyContent: 'center', width: ((width/3)*(85/100)),margin: 5, height: ((width/3)*(85/100)), backgroundColor: ((typeof item.order !== "undefined")?((item.order.isBooked)?"#ccc":"#3498db"):"#3498db"), borderRadius: 10 }}><Text style={{color: "#fff", fontSize: 30}}>{item.name}</Text>
+
+                                                {(typeof item.order !== "undefined" && item.order.isBooked && this.state.count[index]===undefined)?this.countDown(index, item.order.orderEndTime):<></>}
+
+                                                {(typeof item.order !== "undefined" && item.order.isBooked && this.state.count[index]!==undefined)?<Text style={{color: "#fff", fontSize: 20}}>{this.state.count[index]}</Text>:<></>}
+                                                </View>
                                             </TouchableOpacity>
                                             </>
                                         )}
