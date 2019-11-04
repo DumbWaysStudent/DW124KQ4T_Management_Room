@@ -122,7 +122,7 @@ class LoginScreen extends React.Component {
                     <CardItem>
                         <Body>
                             <View style={styles.form}>
-                                <H1 style={styles.title}>Hotel WaterFall</H1>
+                                <H1 style={styles.title}>WaterFall Room</H1>
                                 <Text style={styles.subTitle}>Login</Text>
                                 <Item>
                                     <Input placeholder="Username" value={this.state.inputUsername} onChangeText={this.handleInputUsername} />

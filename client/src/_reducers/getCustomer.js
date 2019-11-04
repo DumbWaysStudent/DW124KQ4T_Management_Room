@@ -40,7 +40,7 @@ const getCustomer = (state = initialState, action) => {
           } 
       case ADD_CUSTOMER:
           let data =state.data.filter((item)=>item.id!==0)
-          data.push(action.payload);
+          data.unshift(action.payload);
           return {
             ...state,
             isLoading: false,
